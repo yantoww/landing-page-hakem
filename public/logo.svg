@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Logo Partai Simpul">
+  <rect width="64" height="64" rx="14" fill="#141B4D"/>
+  <g fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 17H20L36 33" stroke="#F6B21B"/>
+    <path d="M9 49H20L36 33" stroke="#9DB8F5"/>
+    <path d="M9 33H55" stroke="#FFFFFF"/>
+  </g>
+  <circle cx="37" cy="33" r="9.5" fill="#141B4D" stroke="#FFFFFF" stroke-width="5"/>
+</svg>

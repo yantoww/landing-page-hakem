@@ -1,0 +1,12 @@
+---
+// Papan stasiun: lencana nomor di rel utama + judul bagian.
+const { num, id, title, sub, interchange = false } = Astro.props;
+---
+
+<header class={`sign${interchange ? ' sign--interchange' : ''}`}>
+  <span class="bullet" aria-hidden="true">{num}</span>
+  <div>
+    <h2 id={id}>{title}</h2>
+    <p class="sign__sub">{sub}</p>
+  </div>
+</header>

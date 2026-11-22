@@ -1,0 +1,71 @@
+---
+import Sign from './Sign.astro';
+import { social } from '../data/site.js';
+
+const terms = [
+  ['Simulasi akademik', 'Partai Simpul fiktif dan tidak berafiliasi dengan partai politik mana pun.'],
+  ['Data', 'Hanya nama panggilan, tersimpan di browser dan tidak dikirim ke server. Tidak ada pelacak atau analitik.'],
+  ['Integritas', 'Tidak ada bot, pembelian pengikut, atau pengaturan hasil voting. Angka awal diberi label data simulasi.'],
+  ['Pengungkapan AI', 'Desain, kode, dan draf konten website ini dibantu AI (Claude, Anthropic). Tim kelompok meninjau dan bertanggung jawab atas isinya.'],
+];
+---
+
+<section class="sec sec--dark" id="contact" aria-labelledby="contact-title">
+  <div class="wrap wrap--rail">
+    <Sign num="07" id="contact-title" title="Contact & Social Media" sub="Akun media sosial proyek dan saluran pengaduan." />
+
+    <div class="contact__grid">
+      <div>
+        <h3>Media sosial</h3>
+        <ul class="socials">
+          {
+            social.map((s) =>
+              s.href ? (
+                <li>
+                  <a href={s.href} target="_blank" rel="noopener noreferrer">
+                    <strong>{s.name}</strong>
+                    <span class="socials__handle">{s.handle}</span>
+                    <span class="socials__use">{s.use}</span>
+                    <span class="sr-only">(buka di tab baru)</span>
+                  </a>
+                </li>
+              ) : (
+                <li>
+                  <div class="socials__ph">
+                    <strong>{s.name}</strong>
+                    <span class="socials__handle">{s.handle}</span>
+                    <span class="socials__use">{s.use}</span>
+                    <span class="socials__todo">Tautan akun belum diisi tim.</span>
+                  </div>
+                </li>
+              ),
+            )
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3>Saluran pengaduan</h3>
+        <p>
+          Dugaan penyalahgunaan data, manipulasi voting, atau unggahan yang melanggar tata krama bisa dilaporkan lewat Aspirasi
+          dengan kategori Pengaduan integritas, atau lewat tombol Laporkan di forum. Komite Integritas menjawab secara tertulis.
+        </p>
+        <a class="btn btn--primary" href="#partisipasi-aspirasi">Ajukan pengaduan lewat Aspirasi</a>
+      </div>
+    </div>
+
+    <div class="terms">
+      <h3>Tata tertib situs</h3>
+      <dl>
+        {
+          terms.map((t) => (
+            <div>
+              <dt>{t[0]}</dt>
+              <dd>{t[1]}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>

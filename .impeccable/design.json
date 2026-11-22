@@ -1,0 +1,450 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-22T07:14:02.611Z",
+  "title": "Design System: Partai Simpul",
+  "extensions": {
+    "colorMeta": {
+      "nila-900": {
+        "role": "primary",
+        "displayName": "Nila Pekat",
+        "canonical": "#141b4d",
+        "tonalRamp": [
+          "#0a0e27",
+          "#0d1232",
+          "#10163e",
+          "#121947",
+          "#141b4d",
+          "#5b5f82",
+          "#9598af",
+          "#d0d1db"
+        ]
+      },
+      "nila-800": {
+        "role": "primary",
+        "displayName": "Nila Tua",
+        "canonical": "#1d2766",
+        "tonalRamp": [
+          "#0f1433",
+          "#131942",
+          "#171f52",
+          "#1b245e",
+          "#1d2766",
+          "#616894",
+          "#999eba",
+          "#d2d4e0"
+        ]
+      },
+      "nila-700": {
+        "role": "primary",
+        "displayName": "Nila Terang",
+        "canonical": "#2a3590",
+        "tonalRamp": [
+          "#151b48",
+          "#1b225e",
+          "#222a73",
+          "#273184",
+          "#2a3590",
+          "#6a72b1",
+          "#9fa4cd",
+          "#d4d7e9"
+        ]
+      },
+      "kunyit": {
+        "role": "primary",
+        "displayName": "Kunyit (action)",
+        "canonical": "#f6b21b",
+        "tonalRamp": [
+          "#7b590e",
+          "#a07412",
+          "#c58e16",
+          "#e2a419",
+          "#f6b21b",
+          "#f9c95f",
+          "#fbdc98",
+          "#fdf0d1"
+        ]
+      },
+      "langit": {
+        "role": "secondary",
+        "displayName": "Langit (line F)",
+        "canonical": "#9db8f5",
+        "tonalRamp": [
+          "#4f5c7b",
+          "#66789f",
+          "#7e93c4",
+          "#90a9e1",
+          "#9db8f5",
+          "#bacdf8",
+          "#d3dffb",
+          "#ebf1fd"
+        ]
+      },
+      "cabai": {
+        "role": "tertiary",
+        "displayName": "Cabai (error, stamp)",
+        "canonical": "#b42e12",
+        "tonalRamp": [
+          "#5a1709",
+          "#751e0c",
+          "#90250e",
+          "#a62a11",
+          "#b42e12",
+          "#cb6d59",
+          "#dda194",
+          "#f0d5d0"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Kertas Papan",
+        "canonical": "#f6f7fb",
+        "tonalRamp": [
+          "#7b7c7e",
+          "#a0a1a3",
+          "#c5c6c9",
+          "#e2e3e7",
+          "#f6f7fb",
+          "#f9f9fc",
+          "#fbfbfd",
+          "#fdfdfe"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Putih Papan",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#808080",
+          "#a6a6a6",
+          "#cccccc",
+          "#ebebeb",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff"
+        ]
+      },
+      "nila-100": {
+        "role": "neutral",
+        "displayName": "Nila Pucat",
+        "canonical": "#e7eaf8",
+        "tonalRamp": [
+          "#74757c",
+          "#9698a1",
+          "#b9bbc6",
+          "#d5d7e4",
+          "#e7eaf8",
+          "#eef0fa",
+          "#f4f6fc",
+          "#fafbfe"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Tinta 2",
+        "canonical": "#3a416f",
+        "tonalRamp": [
+          "#1d2138",
+          "#262a48",
+          "#2e3459",
+          "#353c66",
+          "#3a416f",
+          "#757a9a",
+          "#a6aabe",
+          "#d8d9e2"
+        ]
+      },
+      "on-dark-2": {
+        "role": "neutral",
+        "displayName": "Tinta Terang",
+        "canonical": "#cbd2f4",
+        "tonalRamp": [
+          "#66697a",
+          "#84899f",
+          "#a2a8c3",
+          "#bbc1e0",
+          "#cbd2f4",
+          "#dbe0f7",
+          "#e8ebfa",
+          "#f5f6fd"
+        ]
+      },
+      "ctl": {
+        "role": "neutral",
+        "displayName": "Kontrol",
+        "canonical": "#5a628f",
+        "tonalRamp": [
+          "#2d3148",
+          "#3b405d",
+          "#484e72",
+          "#535a84",
+          "#5a628f",
+          "#8c91b1",
+          "#b5b8cd",
+          "#dee0e9"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero h1 only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles beside the station bullet."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "h3 panels and sub-blocks."
+      },
+      "subtitle": {
+        "displayName": "Subtitle",
+        "purpose": "h4 and row titles."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Hero paragraph on indigo."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, 68ch max."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons and menu items."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Hints, notes, footnotes."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lift",
+        "value": "0 1px 0 rgba(20, 27, 77, 0.08), 0 14px 26px -14px rgba(20, 27, 77, 0.5)",
+        "purpose": "Stuck header, route menu, hero ballot card, member pass. The only shadow."
+      },
+      {
+        "name": "badge-ring",
+        "value": "inset 0 0 0 2px #141b4d",
+        "purpose": "Outline ring on line badges (an outline, not depth)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All reveals and state changes."
+      },
+      {
+        "name": "state",
+        "value": "0.15s-0.4s",
+        "purpose": "Hover, press, tab color."
+      },
+      {
+        "name": "reveal",
+        "value": "0.35s-1s, staggered 70-110ms",
+        "purpose": "Unveil, draw, pop, bars (0.9s)."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation/transition: none !important",
+        "purpose": "State is kept (lit rail, decided station, results); tab sweep hidden."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "nav-strip",
+        "value": "1260px (min)"
+      },
+      {
+        "name": "hero-tier",
+        "value": "1039px (max)"
+      },
+      {
+        "name": "agenda",
+        "value": "1000px (max)"
+      },
+      {
+        "name": "hero-one-col",
+        "value": "960px (max) / 961px (min)"
+      },
+      {
+        "name": "rail",
+        "value": "900px (min) / 899px (max)"
+      },
+      {
+        "name": "table",
+        "value": "760px (max)"
+      },
+      {
+        "name": "header-cta",
+        "value": "639px (max)"
+      },
+      {
+        "name": "small",
+        "value": "560px (max)"
+      },
+      {
+        "name": "short-height",
+        "value": "min-width 961px and max-height 820px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one action: kunyit fill, nila text.",
+      "html": "<button class=\"ds-btn-primary\">Daftar anggota simulasi</button>",
+      "css": ".ds-btn-primary{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;min-height:48px;padding:0 22px;border:2px solid #f6b21b;border-radius:10px;background:#f6b21b;color:#141b4d;font-weight:700;font-size:1rem;cursor:pointer;transition:background-color .15s,border-color .15s,transform .15s}.ds-btn-primary:hover{background:#ffc641;border-color:#ffc641}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:3px solid #2a3590;outline-offset:3px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action on light grounds.",
+      "html": "<button class=\"ds-btn-ghost\">Lihat aturan</button>",
+      "css": ".ds-btn-ghost{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;min-height:48px;padding:0 22px;border:2px solid #141b4d;border-radius:10px;background:transparent;color:#141b4d;font-weight:700;font-size:1rem;cursor:pointer;transition:background-color .15s}.ds-btn-ghost:hover{background:#e7eaf8}.ds-btn-ghost:focus-visible{outline:3px solid #2a3590;outline-offset:3px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labelled 48px field with a 2px control border; error turns the border cabai.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-label\">Nama lengkap</span><input class=\"ds-input\" value=\"Contoh Nama\"></label>",
+      "css": ".ds-field{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;display:grid;gap:6px;max-width:320px}.ds-label{font-weight:700;font-size:.9375rem;color:#141b4d}.ds-input{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;min-height:48px;padding:10px 14px;border:2px solid #5a628f;border-radius:6px;background:#fff;color:#141b4d;font-size:1rem}.ds-input:focus-visible{outline:3px solid #2a3590;outline-offset:2px;border-color:#141b4d}.ds-input[aria-invalid=\"true\"]{border-color:#b42e12}"
+    },
+    {
+      "name": "Line Badges",
+      "kind": "chip",
+      "refersTo": "line-badge-a",
+      "description": "Lettered line identity: A kunyit, F langit, S white.",
+      "html": "<span class=\"ds-line ds-a\">A</span> <span class=\"ds-line ds-f\">F</span> <span class=\"ds-line ds-s\">S</span>",
+      "css": ".ds-line{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:7px;font-size:.875rem;font-weight:800;line-height:1;color:#141b4d;box-shadow:inset 0 0 0 2px #141b4d}.ds-a{background:#f6b21b}.ds-f{background:#9db8f5}.ds-s{background:#fff}"
+    },
+    {
+      "name": "Station Sign",
+      "kind": "custom",
+      "refersTo": "station-bullet",
+      "description": "Section heading: ringed numbered bullet beside a heavy title.",
+      "html": "<div class=\"ds-sign\"><span class=\"ds-bullet\">02</span><h2 class=\"ds-sign-h\">Tentang Kami</h2></div>",
+      "css": ".ds-sign{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;display:flex;gap:16px;align-items:flex-start;color:#141b4d}.ds-bullet{display:grid;place-items:center;flex:none;width:52px;height:52px;border-radius:50%;border:8px solid #141b4d;background:#fff;font-weight:800;font-size:.9375rem;font-variant-numeric:tabular-nums}.ds-sign-h{margin:4px 0 0;font-size:2rem;line-height:1.06;font-weight:800;letter-spacing:-.02em}"
+    },
+    {
+      "name": "Station Strip",
+      "kind": "nav",
+      "refersTo": "station-bullet",
+      "description": "Header nav: stations on a 4px line; past filled nila, current kunyit.",
+      "html": "<ol class=\"ds-strip\"><li class=\"past\"><a><i></i>Beranda</a></li><li class=\"cur\"><a><i></i>Tentang</a></li><li><a><i></i>Agenda</a></li></ol>",
+      "css": ".ds-strip{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;display:flex;list-style:none;margin:0;padding:0;width:360px}.ds-strip li{position:relative;flex:1}.ds-strip li+li::before{content:\"\";position:absolute;top:17px;right:50%;width:100%;height:4px;background:rgba(20,27,77,.18)}.ds-strip li.past::before,.ds-strip li.cur::before{background:#141b4d}.ds-strip a{position:relative;display:grid;justify-items:center;gap:4px;padding:8px 4px 6px;color:#3a416f;font-size:.875rem;font-weight:600}.ds-strip i{position:relative;z-index:1;width:18px;height:18px;border-radius:50%;border:4px solid #5a628f;background:#fff}.ds-strip .past i{border-color:#141b4d;background:#141b4d}.ds-strip .cur i{border-color:#141b4d;background:#f6b21b;transform:scale(1.3)}.ds-strip .cur a{color:#141b4d;font-weight:800}"
+    },
+    {
+      "name": "Ballot Option and Quorum",
+      "kind": "card",
+      "refersTo": "ballot-card",
+      "description": "Vote card: option row with ringed dot, quorum meter in kunyit.",
+      "html": "<div class=\"ds-ballot\"><label class=\"ds-opt\"><i></i>Setuju</label><div class=\"ds-meter\"><span></span></div></div>",
+      "css": ".ds-ballot{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;width:320px;padding:22px;background:#fff;color:#141b4d;border-radius:16px;box-shadow:0 1px 0 rgba(20,27,77,.08),0 14px 26px -14px rgba(20,27,77,.5)}.ds-opt{display:flex;align-items:center;gap:14px;min-height:54px;padding:9px 16px;border:2px solid #5a628f;border-radius:6px;font-weight:600;cursor:pointer}.ds-opt:hover{background:#e7eaf8}.ds-opt i{width:24px;height:24px;border-radius:50%;border:5px solid #141b4d;background:#fff}.ds-meter{height:14px;margin-top:18px;border:2px solid #141b4d;border-radius:4px;overflow:hidden}.ds-meter span{display:block;width:62%;height:100%;background:#f6b21b}"
+    },
+    {
+      "name": "Member Pass",
+      "kind": "custom",
+      "refersTo": "member-pass",
+      "description": "Commuter-card membership pass with tri-line stripe.",
+      "html": "<div class=\"ds-pass\"><p class=\"b\">Partai Simpul</p><p class=\"n\">Nama Anggota</p><p class=\"no\">SMP-0042</p></div>",
+      "css": ".ds-pass{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;position:relative;overflow:hidden;width:320px;aspect-ratio:1.586;padding:20px 22px;background:#141b4d;color:#fff;border-radius:16px;box-shadow:0 1px 0 rgba(20,27,77,.08),0 14px 26px -14px rgba(20,27,77,.5)}.ds-pass::before{content:\"\";position:absolute;top:-10px;bottom:-10px;right:-24px;width:78px;transform:skewX(-14deg);background:linear-gradient(90deg,#f6b21b 0 33.33%,#fff 33.33% 66.66%,#9db8f5 66.66%)}.ds-pass p{position:relative;margin:0;max-width:calc(100% - 64px)}.ds-pass .b{font-weight:800}.ds-pass .n{margin-top:44px;font-size:1.5rem;font-weight:800}.ds-pass .no{color:#f6b21b;font-weight:700;letter-spacing:.08em}"
+    },
+    {
+      "name": "Stamp",
+      "kind": "custom",
+      "refersTo": "stamp",
+      "description": "Rotated cabai stamp; the only uppercase device.",
+      "html": "<span class=\"ds-stamp\">Simulasi</span>",
+      "css": ".ds-stamp{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;display:inline-block;padding:8px 12px;border:3px solid #b42e12;border-radius:6px;color:#b42e12;font-size:.8125rem;font-weight:900;line-height:1.15;text-transform:uppercase;letter-spacing:.03em;transform:rotate(-6deg)}"
+    },
+    {
+      "name": "Disruption Row",
+      "kind": "custom",
+      "refersTo": "nila-900",
+      "description": "Informasi gangguan row on indigo: kunyit rule, white title, kunyit terms.",
+      "html": "<div class=\"ds-alert\"><h4>Risiko kuorum rendah</h4><dl><dt>Penanganan</dt><dd>Perpanjang masa suara.</dd></dl></div>",
+      "css": ".ds-alert{font-family:'Overpass Variable','Segoe UI',system-ui,sans-serif;display:grid;grid-template-columns:.8fr 2fr;gap:12px 32px;padding:22px 16px;background:#141b4d;color:#cbd2f4;border-top:3px solid #f6b21b}.ds-alert h4{margin:0;color:#fff;font-size:1.125rem;font-weight:750}.ds-alert dl{margin:0}.ds-alert dt{margin-bottom:4px;color:#f6b21b;font-size:.875rem;font-weight:800}.ds-alert dd{margin:0}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Jalur Simpul (the transit-signage map)",
+    "overview": "The page is a route map. Three lines, A (Aspirasi), F (Forum) and S (Suara), converge on one interchange where member input becomes a decided outcome, and the conversion rule is printed on the board like a station notice. Every surface borrows from way-finding signage: heavy rail strokes, ringed stations, lettered line badges, a commuter-card pass, a service-disruption table and a rubber stamp. Flat, saturated and legible from across a room.\n\nGrounds alternate between pale blue-white paper and full-bleed deep indigo (nila). One warm color, kunyit, is reserved for the single primary action and the \"you are here\" signal. Type is Overpass only, heavy for headings and plain for reading.",
+    "keyCharacteristics": [
+      "Flat, outlined, signage-like: depth from tone, thick strokes and one soft lift shadow, never hard offsets.",
+      "Two grounds in rhythm: light reading areas and full indigo fields.",
+      "One action color (kunyit); line colors appear only as badges, map strokes and tab underlines.",
+      "Motion is a signal travelling the line."
+    ],
+    "rules": [
+      {
+        "name": "The One Action Rule",
+        "body": "Kunyit marks the primary action and the \"you are here\" signal. A screen has one kunyit button; line identity colors are never reused as buttons.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cabai Reserve Rule",
+        "body": "Cabai appears only for error and the stamp. It never decorates, never marks a line, never fills a section.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Grounds Rule",
+        "body": "Reading areas are paper/white/nila-100; hero, participation, rules/risks and footer are full nila-900. White panels inside an indigo field flip focus back to nila-700.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sign Face Rule",
+        "body": "Overpass only. No second family, no system display face, no italic voice.",
+        "section": "typography"
+      },
+      {
+        "name": "The Weight-Not-Case Rule",
+        "body": "Hierarchy is made with weight and size. Uppercase is reserved for the stamp (and the decorative pass watermark); never a label style.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Lift Rule",
+        "body": "Only floating or physical objects (stuck header, menu, vote card, pass) take --lift. Everything else stays flat.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Signal Rule",
+        "body": "Motion shows cause: something travels a line to where it matters. Decorative drift, parallax and idle loops are out.",
+        "section": "motion"
+      },
+      {
+        "name": "The Gated Start Rule",
+        "body": "A hidden from-state exists only under .js and no-preference; without JS or with reduced motion the page is complete and visible.",
+        "section": "motion"
+      }
+    ],
+    "dos": [
+      "Do use kunyit for exactly one primary action per view and for the current-station signal.",
+      "Do keep every control at 44px minimum height (48px default) with a visible 3px focus ring (nila-700 on light, kunyit on dark).",
+      "Do build new sections as stations: a ringed bullet, a heavy title, rail on the left at 900px+.",
+      "Do express line identity with the A/F/S badge and its fixed color (kunyit, langit, white).",
+      "Do keep placeholders labelled: every input has a visible label, and unresolved copy uses the dashed .ph marker.",
+      "Do pair text and ground only from the verified contrast list.",
+      "Do write motion as transform/opacity/clip-path/stroke-dashoffset, gated by prefers-reduced-motion: no-preference or .js, with IntersectionObserver instead of scroll listeners.",
+      "Do keep the mandatory label band, with its single em dash, at the top of every page."
+    ],
+    "donts": [
+      "Don't add kickers, eyebrows or small uppercase label lines above headings.",
+      "Don't use icon glyphs or icon fonts; arrows and chevrons are drawn SVG, and signs are circles, letters and strokes.",
+      "Don't use hard offset shadows, glows or any shadow other than --lift.",
+      "Don't use gradient text or decorative gradients; the only gradient is the pass's hard-stop tri-stripe.",
+      "Don't use more than one em dash on the site: the mandatory label is the only one.",
+      "Don't put kunyit on white as text or a border, or use cabai for anything but error and the stamp.",
+      "Don't use a second typeface or a system display face.",
+      "Don't hide text with motion, run infinite loops, or attach scroll listeners.",
+      "Don't fall back to the generic party site: a photo hero, three pillar cards, headline statistics."
+    ]
+  }
+}

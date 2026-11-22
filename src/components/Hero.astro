@@ -1,0 +1,201 @@
+---
+import Ballot from './Ballot.jsx';
+import { party } from '../data/site.js';
+---
+
+<section class="hero" id="home" aria-labelledby="hero-title">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <h1 id="hero-title">
+        <span class="ln" style="--k: 0">Politik yang</span>
+        <span class="ln" style="--k: 1">bisa kamu</span>
+        <span class="ln hl" style="--k: 2">ikut putuskan.</span>
+      </h1>
+      <p class="lead">
+        Partai digital fiktif. Anggota mengajukan aspirasi, berdiskusi di forum, lalu memutuskan lewat suara dengan kuorum dan
+        batas waktu tindak lanjut.
+      </p>
+      <div class="actions">
+        <a class="btn btn--primary btn--lg" style="--k: 0" href="#membership">Daftar anggota simulasi</a>
+        <a class="btn btn--ghost-light btn--lg" style="--k: 1" href="#participation">Coba forum dan aspirasi</a>
+      </div>
+    </div>
+
+    <div class="hero__ballot" id="peron-suara">
+      <Ballot client:only="react" ballotId="rembuk-12" compact>
+        <p slot="fallback" class="loading">Memuat Peron Suara...</p>
+      </Ballot>
+      <noscript>
+        <p class="loading">Peron Suara membutuhkan JavaScript. Aktifkan JavaScript untuk mencoba voting.</p>
+      </noscript>
+    </div>
+  </div>
+
+  <figure class="wrap map" aria-labelledby="map-cap">
+    <figcaption id="map-cap">
+      <strong>{party.slogan}</strong>
+      <span>Tiga jalur bertemu di satu simpul, lalu menjadi keputusan yang ditetapkan.</span>
+    </figcaption>
+
+    <svg class="map__svg map__svg--h" data-ring="714" viewBox="0 0 1180 226" aria-label="Peta alur keputusan, versi lebar">
+      <g class="map__lines" fill="none" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+        <path class="draw draw--a" style="--len: 760" d="M56 44 H702 L770 112" stroke="#F6B21B"></path>
+        <path class="draw draw--f" style="--len: 760" d="M56 180 H702 L770 112" stroke="#9DB8F5"></path>
+        <path class="draw draw--s" style="--len: 1050" d="M56 112 H1100" stroke="#FFFFFF"></path>
+      </g>
+
+      <g class="map__badges">
+        <rect x="14" y="27" width="34" height="34" rx="6" fill="#F6B21B" style="--d: 0.55s"></rect>
+        <text x="31" y="50" text-anchor="middle" style="--d: 0.55s">A</text>
+        <rect x="14" y="95" width="34" height="34" rx="6" fill="#FFFFFF" style="--d: 0.65s"></rect>
+        <text x="31" y="118" text-anchor="middle" style="--d: 0.65s">S</text>
+        <rect x="14" y="163" width="34" height="34" rx="6" fill="#9DB8F5" style="--d: 0.75s"></rect>
+        <text x="31" y="186" text-anchor="middle" style="--d: 0.75s">F</text>
+      </g>
+
+      <g class="map__stations">
+        <circle cx="170" cy="44" r="11" style="--d: 0.85s"></circle>
+        <circle cx="450" cy="44" r="11" style="--d: 1.05s"></circle>
+        <circle cx="170" cy="112" r="11" style="--d: 1.05s"></circle>
+        <circle cx="450" cy="112" r="11" style="--d: 1.25s"></circle>
+        <circle cx="170" cy="180" r="11" style="--d: 0.95s"></circle>
+        <circle cx="450" cy="180" r="11" style="--d: 1.15s"></circle>
+        <circle class="map__t1" cx="900" cy="112" r="11" style="--d: 1.95s"></circle>
+        <rect class="map__end" x="1106" y="86" width="10" height="52" rx="3" style="--d: 2.2s"></rect>
+        <circle class="map__ring" cx="770" cy="112" r="27" style="--d: 1.55s"></circle>
+        <circle class="map__core" cx="770" cy="112" r="9" style="--d: 1.6s"></circle>
+        <circle class="map__ripple" cx="770" cy="112" r="27"></circle>
+        <circle class="map__token" cx="-40" cy="-40" r="10"></circle>
+      </g>
+
+      <g class="map__labels" text-anchor="middle">
+        <a class="lbl lbl--a" href="#partisipasi-aspirasi"><rect class="map__hit" x="70" y="4" width="200" height="54"></rect><text x="170" y="22" style="--d: 1s">Ajukan aspirasi</text></a>
+        <text x="450" y="22" style="--d: 1.2s">100 dukungan: wajib masuk agenda</text>
+        <a class="lbl lbl--s" href="#partisipasi-suara"><rect class="map__hit" x="40" y="66" width="260" height="56"></rect><text x="170" y="90" style="--d: 1.2s">Rembuk: satu anggota, satu suara</text></a>
+        <text x="450" y="90" style="--d: 1.4s">Kuorum 30% anggota aktif</text>
+        <a class="lbl lbl--f" href="#partisipasi-forum"><rect class="map__hit" x="70" y="162" width="200" height="60"></rect><text x="170" y="214" style="--d: 1.1s">Buka diskusi di forum</text></a>
+        <text x="450" y="214" style="--d: 1.3s">Moderasi terbuka dan tercatat</text>
+        <text class="map__decided" x="900" y="156" style="--d: 2.05s">Keputusan ditetapkan</text>
+        <text x="1172" y="156" text-anchor="end" style="--d: 2.3s">Wajib dimuat</text>
+        <text x="1172" y="174" text-anchor="end" style="--d: 2.3s">dalam 3 hari</text>
+        <text x="806" y="88" text-anchor="start" class="map__name" style="--d: 1.7s">SIMPUL</text>
+      </g>
+    </svg>
+
+    <svg class="map__svg map__svg--v" data-ring="204" viewBox="0 0 360 340" aria-label="Peta alur keputusan, versi sempit">
+      <g class="map__lines" fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+        <path class="draw draw--a" style="--len: 260" d="M46 40 H180 L250 110" stroke="#F6B21B"></path>
+        <path class="draw draw--f" style="--len: 260" d="M46 180 H180 L250 110" stroke="#9DB8F5"></path>
+        <path class="draw draw--s" style="--len: 420" d="M46 110 H250 V296" stroke="#FFFFFF"></path>
+      </g>
+
+      <g class="map__badges">
+        <rect x="6" y="26" width="28" height="28" rx="5" fill="#F6B21B" style="--d: 0.55s"></rect>
+        <text x="20" y="46" text-anchor="middle" style="--d: 0.55s">A</text>
+        <rect x="6" y="96" width="28" height="28" rx="5" fill="#FFFFFF" style="--d: 0.65s"></rect>
+        <text x="20" y="116" text-anchor="middle" style="--d: 0.65s">S</text>
+        <rect x="6" y="166" width="28" height="28" rx="5" fill="#9DB8F5" style="--d: 0.75s"></rect>
+        <text x="20" y="186" text-anchor="middle" style="--d: 0.75s">F</text>
+      </g>
+
+      <g class="map__stations">
+        <circle cx="76" cy="40" r="9" style="--d: 0.85s"></circle>
+        <circle cx="150" cy="40" r="9" style="--d: 1s"></circle>
+        <circle cx="76" cy="110" r="9" style="--d: 1.05s"></circle>
+        <circle cx="150" cy="110" r="9" style="--d: 1.2s"></circle>
+        <circle cx="76" cy="180" r="9" style="--d: 0.95s"></circle>
+        <circle cx="150" cy="180" r="9" style="--d: 1.1s"></circle>
+        <circle class="map__t1" cx="250" cy="214" r="9" style="--d: 1.9s"></circle>
+        <rect class="map__end" x="226" y="298" width="48" height="9" rx="3" style="--d: 2.15s"></rect>
+        <circle class="map__ring" cx="250" cy="110" r="22" style="--d: 1.5s"></circle>
+        <circle class="map__core" cx="250" cy="110" r="7" style="--d: 1.55s"></circle>
+        <circle class="map__ripple" cx="250" cy="110" r="22"></circle>
+        <circle class="map__token" cx="-40" cy="-40" r="9"></circle>
+      </g>
+
+      <g class="map__labels" text-anchor="middle">
+        <a class="lbl lbl--a" href="#partisipasi-aspirasi"><rect class="map__hit" x="38" y="0" width="76" height="52"></rect><text x="76" y="19" style="--d: 0.95s">Ajukan</text></a>
+        <text x="150" y="19" style="--d: 1.1s">100 dukungan</text>
+        <a class="lbl lbl--s" href="#partisipasi-suara"><rect class="map__hit" x="38" y="70" width="76" height="52"></rect><text x="76" y="89" style="--d: 1.15s">Voting</text></a>
+        <text x="150" y="89" style="--d: 1.3s">Kuorum 30%</text>
+        <a class="lbl lbl--f" href="#partisipasi-forum"><rect class="map__hit" x="38" y="140" width="76" height="52"></rect><text x="76" y="159" style="--d: 1.05s">Forum</text></a>
+        <text x="150" y="159" style="--d: 1.2s">Moderasi</text>
+        <text class="map__decided" x="232" y="219" text-anchor="end" style="--d: 2s">Keputusan ditetapkan</text>
+        <text x="232" y="332" text-anchor="end" style="--d: 2.25s">Dimuat dalam 3 hari</text>
+        <text x="284" y="116" text-anchor="start" class="map__name" style="--d: 1.7s">SIMPUL</text>
+      </g>
+    </svg>
+  </figure>
+</section>
+
+<script>
+  // Sinyal di jalur: aksi anggota mengirim token lewat jalurnya ke simpul. Suara yang melengkapi kuorum
+  // melanjutkan token ke terminus dan menyalakan stasiun "Keputusan ditetapkan".
+  const map = document.querySelector('.map');
+  if (map) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let visible = false;
+    let busy = false;
+    new IntersectionObserver((es) => (visible = es[0].isIntersecting), { threshold: 0.25 }).observe(map);
+
+    const svgNow = () => [...map.querySelectorAll('.map__svg')].find((s) => getComputedStyle(s).display !== 'none');
+    // Stempel "ditetapkan": WAAPI dipakai agar tidak menimpa animasi CSS pembukaan (yang akan terulang bila diganti).
+    const setDecided = (on, animate = false) => {
+      map.classList.toggle('is-decided', on);
+      if (on && animate && !reduce.matches) {
+        map.querySelectorAll('.map__t1, .map__end').forEach((el) =>
+          el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.8)', offset: 0.35 }, { transform: 'scale(1)' }], {
+            duration: 900,
+            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+          }),
+        );
+      }
+    };
+    const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+    const run = (svg, path, from, to, ms) =>
+      new Promise((done) => {
+        const tok = svg.querySelector('.map__token');
+        const t0 = performance.now();
+        tok.style.opacity = '1';
+        const step = (now) => {
+          const k = Math.min(1, (now - t0) / ms);
+          const p = path.getPointAtLength(from + (to - from) * ease(k));
+          tok.setAttribute('cx', p.x);
+          tok.setAttribute('cy', p.y);
+          if (k < 1) requestAnimationFrame(step);
+          else done();
+        };
+        requestAnimationFrame(step);
+      });
+    const ripple = (svg) => {
+      const r = svg.querySelector('.map__ripple');
+      r.classList.remove('go');
+      void r.getBoundingClientRect();
+      r.classList.add('go');
+    };
+
+    window.addEventListener('simpul:state', (e) => {
+      if (!busy) setDecided(e.detail.decided);
+    });
+    window.addEventListener('simpul:signal', async (e) => {
+      const { line, decided } = e.detail;
+      const svg = svgNow();
+      if (!svg || !visible || reduce.matches || busy) {
+        if (decided) setDecided(true);
+        return;
+      }
+      busy = true;
+      const path = svg.querySelector(`.draw--${line}`);
+      const total = path.getTotalLength();
+      const ring = line === 's' ? Number(svg.dataset.ring) : total;
+      await run(svg, path, 0, ring, 850);
+      ripple(svg);
+      if (decided) {
+        await run(svg, path, ring, total, 650);
+        setDecided(true, true);
+      }
+      svg.querySelector('.map__token').style.opacity = '0';
+      busy = false;
+    });
+  }
+</script>

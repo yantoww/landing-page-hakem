@@ -1,0 +1,51 @@
+---
+import Sign from './Sign.astro';
+import { issues } from '../data/site.js';
+
+const rows = [
+  ['Masalah', 'problem'],
+  ['Kelompok terdampak', 'affected'],
+  ['Solusi kebijakan', 'solutions'],
+  ['Strategi digital', 'digital'],
+  ['Indikator keberhasilan (target)', 'indicators'],
+];
+---
+
+<section class="sec sec--tint" id="agenda" aria-labelledby="agenda-title">
+  <div class="wrap wrap--rail">
+    <Sign
+      num="04"
+      id="agenda-title"
+      title="Political Agenda"
+      sub="Tiga isu utama, masing-masing dengan masalah, kelompok terdampak, solusi kebijakan, strategi digital, dan indikator keberhasilan."
+    />
+
+    <div class="issues">
+      {
+        issues.map((i) => (
+          <article class="issue" aria-labelledby={`issue-${i.id}`}>
+            <h3 id={`issue-${i.id}`}>{i.title}</h3>
+            <dl>
+              {rows.map(([label, key]) => (
+                <div>
+                  <dt>{label}</dt>
+                  <dd>
+                    {Array.isArray(i[key]) ? (
+                      <ul class="plain">
+                        {i[key].map((x) => (
+                          <li>{x}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      i[key]
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

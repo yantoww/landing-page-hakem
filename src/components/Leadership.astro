@@ -1,0 +1,222 @@
+---
+import Sign from './Sign.astro';
+import Register from './Register.jsx';
+import { council, bodies } from '../data/site.js';
+
+const placeholder = '[Nama anggota kelompok]';
+
+const tiers = [
+  ['Simpatisan', 'Siapa saja. Membaca forum, hasil Rembuk yang sudah ditutup, dan status aspirasi.'],
+  ['Anggota', 'Mendaftar lewat formulir. Memilih di Rembuk, mengajukan dan mendukung aspirasi, menulis di forum.'],
+  ['Penggerak', 'Anggota yang mengambil tugas: moderator forum, pendamping Simpul Wilayah, atau verifikator Cek Fakta Warga.'],
+  ['Pengurus', 'Anggota aktif sedikitnya 30 hari yang terpilih di Dewan Rembuk atau Komite Integritas.'],
+];
+
+const rights = [
+  'Memilih di setiap Rembuk, serta memilih dan dipilih untuk kursi Dewan.',
+  'Mengajukan dan mendukung aspirasi, lalu mendapat jawaban tertulis.',
+  'Membaca anggaran, laporan kepatuhan, dan hasil audit.',
+  'Mengajukan penarikan mandat bersama 10% anggota.',
+  'Menghapus data diri kapan saja.',
+];
+
+const duties = [
+  'Menaati tata krama forum dan kode etik.',
+  'Memakai satu akun saja.',
+  'Menjaga kerahasiaan data anggota lain.',
+  'Ikut sedikitnya satu Rembuk per bulan agar tetap dihitung sebagai anggota aktif.',
+];
+
+const election = [
+  ['Pencalonan terbuka', 'Anggota aktif sedikitnya 30 hari, didukung 5 anggota.'],
+  ['Masa debat', '14 hari di forum, ditutup sesi tanya jawab.'],
+  ['Pemungutan suara', '3 hari, rahasia, dengan pilihan berperingkat.'],
+  ['Penghitungan terbuka', 'Rekap dipublikasikan dan diaudit Komite Integritas.'],
+  ['Pelantikan dan piagam peran', 'Setiap kursi punya wilayah keputusan tertulis yang tidak tumpang tindih.'],
+  ['Evaluasi dan penarikan mandat', 'Evaluasi tiap 3 bulan. Mandat ditarik bila 10% anggota meminta dan dua pertiga suara setuju.'],
+];
+
+const signup = [
+  ['Isi formulir singkat', 'Nama panggilan, kelompok, dan minat isu. Tanpa NIK atau alamat.'],
+  ['Setujui kode etik dan data', 'Persetujuan eksplisit yang bisa dicabut kapan saja.'],
+  ['Verifikasi (sistem nyata)', 'Email kampus atau pendamping Simpul Wilayah, lalu masa tunggu 7 hari sebelum hak suara aktif agar tidak ada pendaftaran massal. Dilewati di simulasi ini.'],
+  ['Kartu anggota aktif', 'Kartu digital berisi nomor anggota dan jalur yang bisa dipakai.'],
+];
+---
+
+<section class="sec sec--white" id="leadership" aria-labelledby="lead-title">
+  <div class="wrap wrap--rail">
+    <Sign num="03" id="lead-title" title="Leadership & Membership" sub="Struktur organisasi, model kepemimpinan, keanggotaan, dan formulir pendaftaran simulasi." />
+
+    <div class="lead__model">
+      <div>
+        <h3>Kepemimpinan kolektif bergilir</h3>
+        <p>
+          Lima kursi Dewan Rembuk dipilih anggota lewat e-voting untuk satu tahun, maksimal dua periode berturut-turut. Juru bicara
+          berganti tiap tiga bulan, jadi tidak ada satu wajah yang menjadi pusat partai. Keputusan strategis tidak diambil Dewan.
+          Keputusan itu diambil anggota di Rembuk.
+        </p>
+      </div>
+      <div class="duo">
+        <div>
+          <h4>Konsekuensi demokratis yang dicari</h4>
+          <ul class="plain">
+            <li>Menahan hyperleadership: kekuasaan tidak menumpuk pada satu figur.</li>
+            <li>Tanggung jawab jelas per kursi lewat piagam peran tertulis.</li>
+            <li>Anggota punya jalan keluar: mandat ditarik bila 10% anggota meminta dan dua pertiga suara setuju.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Harga yang dibayar dan penangkalnya</h4>
+          <ul class="plain">
+            <li>Keputusan bisa lebih lambat. Penangkal: batas 7 hari untuk usulan yang mencapai ambang, dan jalur cepat untuk keadaan mendesak.</li>
+            <li>Tanggung jawab bisa kabur di antara lima orang. Penangkal: tiap kursi memegang satu wilayah keputusan.</li>
+            <li>Kolektif belum tentu demokratis. Penangkal: Komite Integritas mengaudit prosesnya, bukan hanya hasilnya.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="org">
+      <h3>Bagan organisasi</h3>
+      <ul class="tree">
+        <li>
+          <div class="node node--root">
+            <strong>Majelis Anggota</strong>
+            <span>Seluruh anggota aktif. Kedaulatan tertinggi: memutuskan di Rembuk, memilih pengurus, dan menarik mandat.</span>
+          </div>
+          <ul>
+            <li>
+              <div class="node">
+                <strong>Dewan Rembuk</strong>
+                <span>Lima kursi kolektif yang menjalankan keputusan Rembuk. Pengisi kursi tampil sebagai nama anggota kelompok.</span>
+              </div>
+              <ul class="seats">
+                {
+                  council.map((c) => (
+                    <li>
+                      <div class="node">
+                        <p class="seat__head">
+                          <strong>{c.seat}</strong>
+                          <span class={c.name ? 'seat__name' : 'seat__name ph'}>{c.name ?? placeholder}</span>
+                        </p>
+                        <p>{c.duty}</p>
+                        <p class="seat__role">Peran proyek: {c.role}</p>
+                      </div>
+                    </li>
+                  ))
+                }
+              </ul>
+            </li>
+            {
+              bodies.map((b) => (
+                <li>
+                  <div class="node">
+                    <p class="seat__head">
+                      <strong>{b.body}</strong>
+                      <span class={b.name ? 'seat__name' : 'seat__name ph'}>{b.name ?? placeholder}</span>
+                    </p>
+                    <span>{b.duty}</span>
+                    <span class="seat__role">Peran proyek: {b.role}</span>
+                  </div>
+                </li>
+              ))
+            }
+            <li>
+              <div class="node">
+                <strong>Moderator Forum</strong>
+                <span>Relawan bergilir yang meninjau laporan dalam 24 jam dan mencatat keputusannya di log moderasi.</span>
+              </div>
+            </li>
+            <li>
+              <div class="node">
+                <strong>Simpul Wilayah</strong>
+                <span>Relawan lokal. Menyediakan titik akses dan pendamping bagi anggota yang sulit memakai platform.</span>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="lead__pair">
+      <div>
+        <h3>Jalur keanggotaan</h3>
+        <ol class="route route--v">
+          {
+            tiers.map((t) => (
+              <li>
+                <strong>{t[0]}</strong>
+                <span>{t[1]}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+      <div class="duo duo--stack">
+        <div>
+          <h3>Hak anggota</h3>
+          <ul class="plain">
+            {rights.map((r) => <li>{r}</li>)}
+          </ul>
+        </div>
+        <div>
+          <h3>Kewajiban anggota</h3>
+          <ul class="plain">
+            {duties.map((d) => <li>{d}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="lead__pair">
+      <div>
+        <h3>Prosedur pemilihan pemimpin</h3>
+        <ol class="route route--v">
+          {
+            election.map((e) => (
+              <li>
+                <strong>{e[0]}</strong>
+                <span>{e[1]}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+      <div>
+        <h3>Pendaftaran anggota digital</h3>
+        <ol class="route route--v">
+          {
+            signup.map((e) => (
+              <li>
+                <strong>{e[0]}</strong>
+                <span>{e[1]}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+
+    <div class="member-zone" id="membership">
+      <div class="member-zone__intro">
+        <h3>Daftar sebagai anggota simulasi</h3>
+        <p>
+          Isi formulir singkat, lalu kartu anggota digital terbit saat itu juga. Dengan kartu ini kamu bisa memilih, mendukung
+          aspirasi, dan menulis di forum pada bagian Digital Participation.
+        </p>
+        <p>
+          Formulir ini hanya simulasi. Tidak ada email, NIK, atau alamat yang diminta, dan datamu tidak meninggalkan browser ini.
+        </p>
+      </div>
+      <div class="member-zone__tool">
+        <Register client:only="react">
+          <p slot="fallback" class="loading">Memuat formulir pendaftaran...</p>
+        </Register>
+        <noscript>
+          <p class="loading">Formulir membutuhkan JavaScript. Aktifkan JavaScript untuk mencoba pendaftaran.</p>
+        </noscript>
+      </div>
+    </div>
+  </div>
+</section>

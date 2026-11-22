@@ -1,0 +1,127 @@
+---
+import { party, stations } from '../data/site.js';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<header class="site-head">
+  <p class="label-band">{party.label}</p>
+  <div class="bar">
+    <a class="brand" href="#home" aria-label={`${party.name}, ke awal halaman`}>
+      <img src={`${base}/logo.svg`} alt="" width="40" height="40" />
+      <span class="brand__name">Partai <strong>Simpul</strong></span>
+    </a>
+
+    <nav class="linestrip" aria-label="Peta jalur halaman">
+      <ol>
+        {
+          stations.map((s) => (
+            <li>
+              <a href={`#${s.id}`} data-station={s.id} data-short={s.short}>
+                <span class="linestrip__dot" aria-hidden="true" />
+                <span class="linestrip__name">{s.name}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="map-menu">
+      <span>Peta</span>
+      <strong data-here>Home</strong>
+    </button>
+    <a class="btn btn--primary btn--sm bar__cta" href="#membership">Daftar anggota simulasi</a>
+  </div>
+
+  <nav class="map-menu" id="map-menu" aria-label="Daftar stasiun" hidden>
+    <ol>
+      {
+        stations.map((s, i) => (
+          <li>
+            <a href={`#${s.id}`} data-station={s.id}>
+              <span class="map-menu__dot" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span>{s.name}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <a class="btn btn--primary" href="#membership">Daftar anggota simulasi</a>
+  </nav>
+</header>
+
+<script>
+  const head = document.querySelector('.site-head');
+  const btn = document.querySelector('.menu-btn');
+  const menu = document.getElementById('map-menu');
+  const here = document.querySelector('[data-here]');
+  const links = document.querySelectorAll('.linestrip [data-station]');
+  const ids = [...links].map((a) => a.dataset.station);
+  const names = Object.fromEntries([...links].map((a) => [a.dataset.station, a.dataset.short]));
+
+  let current = null;
+  function setCurrent(id) {
+    const i = ids.indexOf(id);
+    const changed = id !== current;
+    current = id;
+    document.querySelectorAll('[data-station]').forEach((a) => {
+      const j = ids.indexOf(a.dataset.station);
+      const li = a.closest('li');
+      li.classList.toggle('is-past', j < i);
+      li.classList.toggle('is-current', j === i);
+      if (j === i) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+      // Kedatangan di stasiun: titik mendarat sekali, lalu dilepas.
+      if (j === i && changed) {
+        li.classList.add('is-arriving');
+        setTimeout(() => li.classList.remove('is-arriving'), 700);
+      }
+    });
+    if (here) here.textContent = names[id];
+  }
+
+  // Stasiun aktif = bagian yang melintasi garis pada 35% tinggi layar.
+  const io = new IntersectionObserver(
+    (entries) => {
+      const hit = entries.filter((e) => e.isIntersecting).pop();
+      if (hit) setCurrent(hit.target.id);
+    },
+    { rootMargin: '-35% 0px -60% 0px' },
+  );
+  ids.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) io.observe(el);
+  });
+  setCurrent(ids[0]);
+
+  // Tanpa listener scroll: bayangan header lewat sentinel di puncak halaman, dan stasiun terakhir
+  // dianggap tercapai begitu footer terlihat (bagian Contact bisa lebih pendek dari garis baca).
+  new IntersectionObserver((es) => head.classList.toggle('is-stuck', !es[0].isIntersecting)).observe(
+    document.getElementById('top-sentinel'),
+  );
+  const foot = document.querySelector('.site-foot');
+  if (foot) {
+    new IntersectionObserver((es) => {
+      if (es[0].isIntersecting) setCurrent(ids[ids.length - 1]);
+    }).observe(foot);
+  }
+
+  function toggle(open) {
+    const next = open ?? btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(next));
+    menu.hidden = !next;
+  }
+  btn.addEventListener('click', () => toggle());
+  menu.addEventListener('click', (e) => {
+    if (e.target.closest('a')) toggle(false);
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.site-head')) toggle(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+      toggle(false);
+      btn.focus();
+    }
+  });
+</script>

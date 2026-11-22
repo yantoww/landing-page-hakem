@@ -1,0 +1,120 @@
+---
+import Sign from './Sign.astro';
+import { news, party } from '../data/site.js';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const types = [
+  ['semua', 'Semua'],
+  ['kegiatan', 'Kegiatan'],
+  ['berita', 'Berita'],
+  ['materi', 'Materi kampanye'],
+];
+const label = { kegiatan: 'Kegiatan', berita: 'Berita', materi: 'Materi kampanye' };
+const feat = news.find((n) => n.featured);
+const rest = news.filter((n) => !n.featured);
+---
+
+<section class="sec" id="news" aria-labelledby="news-title">
+  <div class="wrap wrap--rail">
+    <Sign num="06" id="news-title" title="News & Activities" sub="Kegiatan, berita, dan materi kampanye Partai Simpul." />
+
+    <div class="filter" role="group" aria-label="Filter jenis informasi">
+      {
+        types.map(([k, l]) => (
+          <button type="button" class="chip" data-filter={k} aria-pressed={k === 'semua' ? 'true' : 'false'}>
+            {l}
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="news">
+      {
+        feat && (
+          <article class="news__feat" data-type={feat.type}>
+            <h3>{feat.title}</h3>
+            <p>{feat.text}</p>
+            <p class="news__where">Lokasi: {party.campus}, Surabaya.</p>
+            <p class="news__tag">{label[feat.type]}, {feat.date}</p>
+          </article>
+        )
+      }
+      <ul class="news__rows">
+        {
+          rest.map((n) => (
+            <li data-type={n.type}>
+              <p class="news__date">{n.date}</p>
+              <div>
+                <h3>{n.title}</h3>
+                <p>{n.text}</p>
+              </div>
+              <p class="news__type">{label[n.type]}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="posters" data-type="materi">
+      <h3>Materi kampanye</h3>
+      <div class="posters__row">
+        <figure class="poster poster--a">
+          <div class="poster__art">
+            <img src={`${base}/logo.svg`} alt="" width="56" height="56" />
+            <p class="poster__big">Politik yang bisa kamu <em>ikut putuskan.</em></p>
+            <p class="poster__small">Terhubung, Berembuk, Memutuskan</p>
+          </div>
+          <figcaption>Poster slogan. Materi kampanye simulasi.</figcaption>
+        </figure>
+
+        <figure class="poster poster--b">
+          <div class="poster__art">
+            <p class="poster__big">Satu anggota, satu suara.</p>
+            <ul class="poster__rules">
+              <li>Kuorum 30% anggota aktif</li>
+              <li>Suara rahasia</li>
+              <li>Hasil dibuka untuk umum</li>
+            </ul>
+            <p class="poster__small">Partai Simpul, simulasi akademik</p>
+          </div>
+          <figcaption>Poster aturan suara. Materi kampanye simulasi.</figcaption>
+        </figure>
+
+        <figure class="poster poster--c">
+          <div class="poster__art">
+            <p class="poster__big">Dari aspirasi ke keputusan</p>
+            <ol class="route route--v route--mini">
+              <li><strong>Diajukan</strong></li>
+              <li><strong>25 dukungan</strong><span>dikaji dalam 7 hari</span></li>
+              <li><strong>100 dukungan</strong><span>wajib masuk agenda Rembuk</span></li>
+              <li><strong>Rembuk</strong><span>diputuskan dengan kuorum</span></li>
+            </ol>
+          </div>
+          <figcaption>Infografik alur aspirasi. Materi kampanye simulasi.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <p class="empty" id="news-empty" hidden>Belum ada item untuk kategori ini.</p>
+  </div>
+</section>
+
+<script>
+  const chips = document.querySelectorAll('.chip[data-filter]');
+  const items = document.querySelectorAll('#news [data-type]');
+  const empty = document.getElementById('news-empty');
+
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      const f = chip.dataset.filter;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      let shown = 0;
+      items.forEach((el) => {
+        const hide = f !== 'semua' && el.dataset.type !== f;
+        el.hidden = hide;
+        if (!hide) shown++;
+      });
+      empty.hidden = shown > 0;
+    }),
+  );
+</script>

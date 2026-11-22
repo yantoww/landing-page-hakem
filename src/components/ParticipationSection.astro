@@ -1,0 +1,81 @@
+---
+import Sign from './Sign.astro';
+import Participation from './Participation.jsx';
+import { rulesMatrix, risks } from '../data/site.js';
+---
+
+<section class="sec sec--dark" id="participation" aria-labelledby="part-title">
+  <div class="wrap wrap--rail">
+    <Sign
+      num="05"
+      id="part-title"
+      title="Digital Participation"
+      sub="Tiga jalur bertemu di satu simpul: Aspirasi, Forum, dan Voting. Semuanya bisa dicoba di sini."
+      interchange
+    />
+
+    <Participation client:only="react">
+      <p slot="fallback" class="loading">Memuat fitur partisipasi...</p>
+    </Participation>
+    <noscript>
+      <p class="loading">Fitur partisipasi membutuhkan JavaScript. Aktifkan JavaScript untuk mencoba voting, forum, dan aspirasi.</p>
+    </noscript>
+
+    <div class="rules">
+      <h3>Aturan main tiga jalur</h3>
+      <table class="stack-table rules__table">
+        <caption class="sr-only">
+          Hak akses, prosedur keputusan, moderasi, transparansi hasil, dan perlindungan data untuk Aspirasi, Forum, dan Voting
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr-only">Aspek</span></th>
+            {
+              rulesMatrix.columns.map((c) => (
+                <th scope="col">
+                  <span class={`line line--${c.code.toLowerCase()}`} aria-hidden="true">{c.code}</span> {c.name}
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rulesMatrix.rows.map((r) => (
+              <tr>
+                <th scope="row">{r.label}</th>
+                {r.cells.map((cell, i) => (
+                  <td data-label={rulesMatrix.columns[i].name}>{cell}</td>
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alerts">
+      <h3>Informasi gangguan dan penanganannya</h3>
+      <p class="alerts__intro">Setiap jalur punya risiko. Ini yang kami catat dan apa yang kami lakukan.</p>
+      <ul>
+        {
+          risks.map((r) => (
+            <li>
+              <h4>{r.title}</h4>
+              <dl>
+                <div>
+                  <dt>Risiko</dt>
+                  <dd>{r.risk}</dd>
+                </div>
+                <div>
+                  <dt>Penanganan</dt>
+                  <dd>{r.handling}</dd>
+                </div>
+              </dl>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

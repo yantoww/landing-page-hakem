@@ -1,0 +1,35 @@
+---
+import '@fontsource-variable/overpass';
+import '../styles/global.css';
+
+const { title, description } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#141B4D" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="id_ID" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <!-- Kelas .js membuka keadaan awal animasi. Tanpa JavaScript, semua isi tampil apa adanya. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Lewati ke isi halaman</a>
+    <div id="top-sentinel" aria-hidden="true"></div>
+    <slot />
+    <script>
+      import '../lib/motion.js';
+    </script>
+  </body>
+</html>

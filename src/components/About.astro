@@ -1,0 +1,200 @@
+---
+import Sign from './Sign.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const problems = [
+  {
+    t: 'Keputusan partai jarang terlihat.',
+    d: 'Warga hanya melihat hasil akhirnya, seperti koalisi dan posisi, tanpa tahu siapa yang memutuskan dan atas dasar apa.',
+  },
+  {
+    t: 'Keanggotaan berhenti di kartu.',
+    d: 'Anggota diminta hadir di kampanye, tetapi tidak punya hak yang jelas untuk menentukan arah partai.',
+  },
+  {
+    t: 'Alat digital berhenti di kampanye.',
+    d: 'Akun media sosial partai ramai, sementara forum internal dan proses keputusan tetap tertutup.',
+  },
+];
+
+const mission = [
+  'Menjadikan suara anggota dasar keputusan strategis, dengan kuorum, mayoritas, dan batas waktu tindak lanjut yang tertulis.',
+  'Menjalankan kepemimpinan kolektif yang bergilir dan bisa ditarik mandatnya oleh anggota.',
+  'Memperjuangkan tiga agenda: kerja layak di ekonomi platform, anggaran terbuka, dan hak digital.',
+  'Mengelola data anggota seminimal mungkin dan membuka aturan platform untuk diaudit Komite Integritas.',
+  'Membuka pintu bagi kelompok yang jarang terwakili, termasuk yang sulit datang ke rapat tatap muka.',
+];
+
+const compare = [
+  [
+    'Keputusan strategis',
+    'Diputuskan pengurus pusat, anggota diberi tahu.',
+    'Diputuskan lewat voting anggota dengan kuorum dan mayoritas yang tertulis.',
+  ],
+  [
+    'Keanggotaan',
+    'Kartu anggota, hak suara sering terbatas pada kongres.',
+    'Daftar daring gratis, hak suara aktif di setiap Rembuk Pekanan.',
+  ],
+  [
+    'Kepemimpinan',
+    'Satu ketua umum.',
+    'Lima kursi kolektif, juru bicara bergilir, mandat bisa ditarik anggota.',
+  ],
+  [
+    'Transparansi',
+    'Laporan berkala.',
+    'Rekap suara, status aspirasi, dan log moderasi tampil langsung.',
+  ],
+  [
+    'Data anggota',
+    'Dikelola sekretariat, aturan akses jarang dipublikasikan.',
+    'Data minimal, hak hapus, dan kotak suara dipisah dari identitas.',
+  ],
+];
+
+const values = [
+  ['Keterbukaan', 'Aturan, hasil, dan alasan keputusan bisa dibaca siapa saja.'],
+  ['Satu suara, satu bobot', 'Tidak ada suara yang lebih berat karena jabatan atau iuran.'],
+  ['Akuntabilitas', 'Setiap kursi punya piagam peran tertulis dan bisa ditarik mandatnya.'],
+  ['Kedaulatan data', 'Anggota memegang data dirinya dan bisa menghapusnya kapan saja.'],
+];
+
+const represented = [
+  'Pemilih pemula dan mahasiswa.',
+  'Pekerja platform: pengemudi, kurir, pekerja lepas, dan kreator.',
+  'Pelaku UMKM digital.',
+  'Warga yang sulit hadir di rapat tatap muka karena jarak, jam kerja, atau disabilitas.',
+];
+
+const meaning = [
+  [
+    'Nama',
+    'Simpul berarti ikatan sekaligus titik temu jalur, seperti simpul transportasi. Setiap anggota adalah satu simpul, dan keputusan lahir di titik temu.',
+  ],
+  [
+    'Logo',
+    'Tiga garis bertemu di satu lingkaran: kuning untuk aspirasi, biru muda untuk forum, putih untuk suara. Garis yang keluar adalah keputusan yang ditetapkan.',
+  ],
+  [
+    'Warna',
+    'Nila (biru tua) untuk ketelitian, warna celup tradisional. Kunyit (kuning) untuk ajakan bertindak, hanya dipakai pada aksi utama. Putih papan untuk keterbukaan.',
+  ],
+  [
+    'Slogan',
+    'Terhubung, Berembuk, Memutuskan adalah urutan kerja kami: kumpulkan usulan, bahas bersama, lalu putuskan dengan aturan yang tertulis.',
+  ],
+];
+---
+
+<section class="sec" id="about" aria-labelledby="about-title">
+  <div class="wrap wrap--rail">
+    <Sign num="02" id="about-title" title="About Us" sub="Latar belakang, visi dan misi, ideologi, dan makna identitas Partai Simpul." />
+
+    <div class="about__top">
+      <div class="about__why">
+        <h3>Mengapa Simpul didirikan</h3>
+        <ol class="route route--v">
+          {
+            problems.map((p) => (
+              <li>
+                <strong>{p.t}</strong>
+                <span>{p.d}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="note">
+          Studi tentang digital party (Gerbaudo, 2018; Barberà dkk., 2021) mencatat bahwa platform bisa memperluas partisipasi
+          anggota, tetapi juga memusatkan kuasa pada pemimpin dan pemilik platform. Simpul menuliskan aturannya sejak awal untuk
+          menjawab risiko itu.
+        </p>
+
+        <div class="about__block">
+          <h3>Ideologi dan orientasi</h3>
+          <p>
+            Demokrasi partisipatoris berlandaskan Pancasila, terutama sila keempat: kerakyatan yang dipimpin oleh hikmat
+            kebijaksanaan dalam permusyawaratan/perwakilan. Kata <em>rembuk</em> (berunding bersama sampai ada kesepakatan)
+            diambil dari tradisi itu.
+          </p>
+          <p>
+            Orientasi kebijakan: progresif dan pragmatis. Posisi Simpul ditentukan oleh keputusan anggota dan bukti, bukan oleh
+            garis ideologi yang dikunci pengurus.
+          </p>
+        </div>
+
+        <div class="about__block">
+          <h3>Kelompok yang diwakili</h3>
+          <ul class="plain">
+            {represented.map((r) => <li>{r}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <div class="about__vision">
+        <h3>Visi</h3>
+        <p class="vision">
+          Politik Indonesia yang keputusan pentingnya bisa dilihat, diikuti, dan ditentukan oleh anggotanya lewat platform yang
+          terbuka untuk diaudit.
+        </p>
+        <h3>Misi</h3>
+        <ol class="mission">
+          {mission.map((m) => <li>{m}</li>)}
+        </ol>
+      </div>
+    </div>
+
+    <div class="about__compare">
+      <h3>Perbedaan dengan partai konvensional</h3>
+      <table class="stack-table compare">
+        <caption>Gambaran umum untuk perbandingan, bukan penilaian atas partai tertentu.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Aspek</th>
+            <th scope="col">Pola umum partai konvensional</th>
+            <th scope="col">Partai Simpul</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            compare.map((r) => (
+              <tr>
+                <th scope="row">{r[0]}</th>
+                <td data-label="Pola umum partai konvensional">{r[1]}</td>
+                <td data-label="Partai Simpul">{r[2]}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <dl class="values">
+      {
+        values.map((v) => (
+          <div>
+            <dt>{v[0]}</dt>
+            <dd>{v[1]}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="identity">
+      <img class="identity__logo" src={`${base}/logo.svg`} alt="Logo Partai Simpul: tiga garis bertemu di satu lingkaran" width="220" height="220" />
+      <div>
+        <h3>Makna identitas</h3>
+        <dl class="meaning">
+          {
+            meaning.map((m) => (
+              <div>
+                <dt>{m[0]}</dt>
+                <dd>{m[1]}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>

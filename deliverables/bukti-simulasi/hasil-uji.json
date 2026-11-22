@@ -1,0 +1,102 @@
+{
+  "tanggal": "2026-11-22T07:17:49.175Z",
+  "konsol": [],
+  "langkah": [
+    {
+      "id": "T01",
+      "judul": "Beranda dan label wajib",
+      "diharapkan": "Label \"Simulasi Akademik — Bukan Partai Politik Resmi\" tampil di pita atas; kartu Peron Suara dan peta jalur terlihat di layar pertama.",
+      "aktual": "Label: \"Simulasi Akademik — Bukan Partai Politik Resmi\". Peron Suara dan peta terlihat.",
+      "lulus": true,
+      "gambar": "01-beranda.png"
+    },
+    {
+      "id": "T02",
+      "judul": "Validasi formulir pendaftaran",
+      "diharapkan": "Formulir kosong ditolak dengan tiga pesan galat; fokus pindah ke kolom pertama yang salah.",
+      "aktual": "3 pesan galat tampil.",
+      "lulus": true,
+      "gambar": "02-validasi-pendaftaran.png"
+    },
+    {
+      "id": "T03",
+      "judul": "Pendaftaran anggota dan kartu digital",
+      "diharapkan": "Dengan data valid, kartu anggota digital terbit dengan nomor SMP-0241.",
+      "aktual": "Kartu terbit: Partai Simpul Kartu anggota digital, simulasi Raras Demo SMP-0241 Anggota, bergabung 22 No",
+      "lulus": true,
+      "gambar": "03-kartu-anggota.png"
+    },
+    {
+      "id": "T04",
+      "judul": "Satu anggota satu suara",
+      "diharapkan": "Anggota memilih satu kali, menerima kode bukti suara, dan formulir suara tidak muncul lagi.",
+      "aktual": "Suaramu tercatat. Kode bukti suara: V-L8ZSJWHE. Formulir suara tersisa: 0.",
+      "lulus": true,
+      "gambar": "04-voting-anggota-pertama.png"
+    },
+    {
+      "id": "T05",
+      "judul": "Kuorum dan keputusan di peta",
+      "diharapkan": "Suara ke-72 melengkapi kuorum 30% (72 dari 240); stasiun \"Keputusan ditetapkan\" di peta menyala.",
+      "aktual": "Partisipasi 72 dari 240 anggota aktif simulasi (30,0%). Kuorum 30% tercapai. Hasil sah jika bertahan sampai penutupan. Stasiun keputusan menyala: ya.",
+      "lulus": true,
+      "gambar": "05-peta-keputusan.png"
+    },
+    {
+      "id": "T06",
+      "judul": "Rekap dengan banyak anggota demo",
+      "diharapkan": "Lima anggota demo lain memilih; total menjadi 77 suara (32,1%) dan rekap per opsi menjumlah 77.",
+      "aktual": "Partisipasi 77 dari 240 anggota aktif simulasi (32,1%). Kuorum 30% tercapai. Hasil sah jika bertahan sampai penutupan. Rincian: 34 suara, 44,2%; 31 suara, 40,3%; 12 suara, 15,6% (jumlah 77).",
+      "lulus": true,
+      "gambar": "06-rekap-voting.png"
+    },
+    {
+      "id": "T07",
+      "judul": "Rembuk tertutup dan tindak lanjut",
+      "diharapkan": "Rembuk #11 menampilkan hasil akhir, cap \"Ditetapkan\", keputusan, dan tindak lanjut.",
+      "aktual": "Keputusan dan tindak lanjut tampil beserta cap.",
+      "lulus": true,
+      "gambar": "07-keputusan-ditetapkan.png"
+    },
+    {
+      "id": "T08",
+      "judul": "Aspirasi: ajukan dan dukung sampai ambang",
+      "diharapkan": "Aspirasi baru berstatus Diajukan dengan 1 dukungan; usulan dengan 19 dukungan naik ke tahap Dikaji saat mencapai 25 setelah 6 anggota demo mendukung.",
+      "aktual": "Sebelum: 19 dukungan, tahap Diajukan. Sesudah: 25 dukungan, tahap Dikaji. Aspirasi baru: 1 dukungan.",
+      "lulus": true,
+      "gambar": "08-aspirasi-ambang-25.png"
+    },
+    {
+      "id": "T09",
+      "judul": "Forum: balasan dan moderasi",
+      "diharapkan": "Balasan terbit atas nama anggota; laporan menyembunyikan unggahan dan tercatat di log moderasi.",
+      "aktual": "Unggahan dilaporkan disembunyikan: 1. Log: Log moderasi di perangkat ini (1) 22 Nov, 14.17 Apa yang paling perlu dibuka dari algoritma aplikasi ojek?: Me",
+      "lulus": true,
+      "gambar": "09-forum-moderasi.png, 09b-log-moderasi.png"
+    },
+    {
+      "id": "T10",
+      "judul": "Hak hapus data anggota",
+      "diharapkan": "Anggota menghapus datanya; kartu hilang dan formulir pendaftaran kembali tampil.",
+      "aktual": "Kartu dihapus dan formulir pendaftaran tampil kembali.",
+      "lulus": true,
+      "gambar": "10-hak-hapus-data.png"
+    },
+    {
+      "id": "T11",
+      "judul": "Reset data simulasi",
+      "diharapkan": "Reset dua langkah mengembalikan data awal: 71 dari 240 suara dan belum ada anggota.",
+      "aktual": "Kamu membaca sebagai pengunjung. Memilih, mendukung, dan menulis hanya untuk anggota. Partisipasi 71 dari 240 anggota aktif simulasi (29,6%). Kuorum 30% belum tercapai, kurang 1 suara.",
+      "lulus": true,
+      "gambar": "11-setelah-reset.png"
+    },
+    {
+      "id": "T12",
+      "judul": "Tampilan ponsel dan navigasi",
+      "diharapkan": "Layar 390 px tanpa overflow horizontal; tombol Peta membuka daftar stasiun.",
+      "aktual": "Overflow horizontal: 0px. Menu peta terbuka: ya.",
+      "lulus": true,
+      "gambar": "12-ponsel-beranda.png, 13-ponsel-menu-peta.png"
+    }
+  ]
+}
