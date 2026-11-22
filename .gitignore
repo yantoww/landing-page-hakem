@@ -3,3 +3,6 @@ dist/
 .astro/
 .impeccable/review/
 .impeccable/mocks/
+
+.vercel
+.env*
