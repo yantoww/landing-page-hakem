@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { groups, issues } from '../data/site.js';
-import { useSim, currentMember, register, signIn, signOut, deleteMember } from '../lib/store.js';
+import { useSim, currentMember, joinMember, signIn, signOut, deleteMember } from '../lib/store.js';
+import { gasEnabled } from '../lib/gas.js';
 import { asset } from './ui.jsx';
 
 const joined = (iso) =>
@@ -13,13 +14,14 @@ export default function Register() {
   return member ? (
     <Pass m={member} focusOnMount={fresh} others={s.members.filter((x) => x.id !== member.id)} />
   ) : (
-    <Form members={s.members} onDone={() => setFresh(true)} />
+    <Form members={s.members} onDone={setFresh} />
   );
 }
 
 function Form({ members, onDone }) {
   const [v, setV] = useState({ nick: '', group: '', issues: [], role: 'Anggota', consent: false });
   const [err, setErr] = useState({});
+  const [busy, setBusy] = useState(false);
   const refs = { nick: useRef(null), group: useRef(null), consent: useRef(null) };
 
   const validate = () => {
@@ -32,8 +34,10 @@ function Form({ members, onDone }) {
     return e;
   };
 
-  function submit(ev) {
+  // Mode Google Spreadsheet: ID anggota dibuat server, jadi kartu tampil setelah server menjawab.
+  async function submit(ev) {
     ev.preventDefault();
+    if (busy) return;
     const e = validate();
     setErr(e);
     const first = Object.keys(e)[0];
@@ -41,8 +45,17 @@ function Form({ members, onDone }) {
       refs[first].current?.focus();
       return;
     }
-    onDone();
-    register({ nick: v.nick, group: v.group, issues: v.issues, role: v.role });
+    setBusy(true);
+    onDone(true); // kartu yang baru terbit mendapat fokus saat tampil
+    try {
+      const r = await joinMember({ nick: v.nick, group: v.group, issues: v.issues, role: v.role });
+      if (!r.ok) {
+        onDone(false);
+        setErr({ form: r.reason });
+      }
+    } finally {
+      setBusy(false);
+    }
   }
 
   const toggleIssue = (id) =>
@@ -134,8 +147,9 @@ function Form({ members, onDone }) {
             aria-describedby="reg-consent-h"
           />
           <span>
-            Saya paham ini simulasi akademik. Data saya hanya tersimpan di browser ini dan tidak dikirim ke mana pun, dan saya
-            tidak memasukkan data pribadi sensitif.
+            {gasEnabled()
+              ? 'Saya paham ini simulasi akademik. Nama panggilan, kelompok, dan isu yang saya pilih disimpan di Google Spreadsheet panitia agar hasilnya tampil di semua perangkat, dan saya tidak memasukkan data pribadi sensitif.'
+              : 'Saya paham ini simulasi akademik. Data saya hanya tersimpan di browser ini dan tidak dikirim ke mana pun, dan saya tidak memasukkan data pribadi sensitif.'}
           </span>
         </label>
         {err.consent && (
@@ -145,8 +159,13 @@ function Form({ members, onDone }) {
         )}
       </div>
 
-      <button className="btn btn--primary" type="submit">
-        Buat kartu anggota simulasi
+      {err.form && (
+        <p className="field__error" role="alert">
+          {err.form}
+        </p>
+      )}
+      <button className="btn btn--primary" type="submit" disabled={busy}>
+        {busy ? 'Menyimpan data...' : 'Buat kartu anggota simulasi'}
       </button>
       <p className="field__hint">
         Pada sistem nyata ada verifikasi dan masa tunggu 7 hari sebelum hak suara aktif. Di simulasi ini keduanya dilewati.
@@ -166,9 +185,31 @@ function Form({ members, onDone }) {
   );
 }
 
+// Lanjut ke Voting: buka tab Voting di Digital Participation. Bila alamatnya sudah sama, hashchange tidak
+// terkirim sendiri, jadi dikirim manual agar tab tetap berpindah.
+const toVoting = () => {
+  if (location.hash === '#partisipasi-suara') window.dispatchEvent(new HashChangeEvent('hashchange'));
+};
+
 function Pass({ m, others, focusOnMount }) {
   const ref = useRef(null);
   const [sure, setSure] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [delErr, setDelErr] = useState('');
+
+  async function remove() {
+    if (!sure) {
+      setSure(true);
+      return;
+    }
+    setBusy(true);
+    const r = await deleteMember(m.id); // mode Google Spreadsheet: baris anggota di server ikut dihapus
+    setBusy(false);
+    if (r && !r.ok) {
+      setSure(false);
+      setDelErr(r.reason);
+    }
+  }
   useEffect(() => {
     if (focusOnMount) ref.current?.focus();
   }, []);
@@ -216,10 +257,15 @@ function Pass({ m, others, focusOnMount }) {
       <div className="member__body">
         <h3 className="member__title">Kartu aktif. Hak suaramu berlaku.</h3>
         <p>
-          Kelompok: {m.group}.{issueNames.length > 0 && ` Isu yang kamu pilih: ${issueNames.join(', ')}.`} Data ini tersimpan
-          hanya di browser ini.
+          Kelompok: {m.group}.{issueNames.length > 0 && ` Isu yang kamu pilih: ${issueNames.join(', ')}.`}{' '}
+          {gasEnabled()
+            ? 'Data ini tersimpan di Google Spreadsheet panitia dan bisa kamu hapus kapan saja.'
+            : 'Data ini tersimpan hanya di browser ini.'}
         </p>
         <div className="actions">
+          <a className="btn btn--primary" href="#partisipasi-suara" onClick={toVoting}>
+            Lanjut ke Voting
+          </a>
           <a className="btn btn--primary" href="#participation">
             Coba voting, forum, dan aspirasi
           </a>
@@ -229,11 +275,17 @@ function Pass({ m, others, focusOnMount }) {
           <button
             type="button"
             className={`btn btn--ghost${sure ? ' btn--warn' : ''}`}
-            onClick={() => (sure ? deleteMember(m.id) : setSure(true))}
+            disabled={busy}
+            onClick={remove}
           >
-            {sure ? 'Klik lagi untuk menghapus datamu' : 'Hapus data saya'}
+            {busy ? 'Menghapus...' : sure ? 'Klik lagi untuk menghapus datamu' : 'Hapus data saya'}
           </button>
         </div>
+        {delErr && (
+          <p className="field__error" role="alert">
+            {delErr}
+          </p>
+        )}
         {others.length > 0 && (
           <p className="gate__back">
             Kartu lain di perangkat ini:{' '}

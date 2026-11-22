@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { resetAll, storageAvailable, useSim } from '../lib/store.js';
+import { gasEnabled } from '../lib/gas.js';
+import { useRealtimeData } from '../hooks/useRealtimeData.js';
 import { LineBadge, LINES, MemberBar } from './ui.jsx';
 import Ballot from './Ballot.jsx';
 import Forum from './Forum.jsx';
@@ -19,6 +21,7 @@ const fromHash = () => {
 
 export default function Participation() {
   useSim(); // render ulang saat penyimpanan berubah
+  const live = useRealtimeData(); // data bersama dari Google Spreadsheet, diperbarui tiap 10 detik tanpa memuat ulang halaman
   const [tab, setTab] = useState(fromHash() || 'aspirasi');
   const [sure, setSure] = useState(false);
   const [bar, setBar] = useState({ x: 0, w: 0 });
@@ -86,6 +89,12 @@ export default function Participation() {
         </p>
       )}
 
+      {live.error && (
+        <p className="notice notice--warn" role="status">
+          Koneksi ke data bersama sedang terputus. Yang tampil adalah data terakhir, dan situs mencoba tersambung lagi otomatis.
+        </p>
+      )}
+
       <MemberBar />
 
       <div className="tabs" ref={tabsRef} role="tablist" aria-label="Tiga jalur partisipasi" onKeyDown={onKey}>
@@ -149,8 +158,9 @@ export default function Participation() {
 
       <div className="part__foot">
         <p>
-          Catatan simulasi: angka awal adalah data simulasi. Suara awal sengaja diatur satu suara di bawah kuorum agar
-          pengaruh suaramu terlihat. Semua data hanya ada di browser ini.
+          {gasEnabled()
+            ? 'Data simulasi dimulai dari nol. Data yang kamu tambahkan tersimpan di Google Spreadsheet panitia dan tampil di semua perangkat. Laporan forum hanya berlaku di perangkat ini.'
+            : 'Data simulasi dimulai dari nol. Semua data yang kamu tambahkan hanya tersimpan di browser ini.'}
         </p>
         <button
           type="button"
@@ -162,7 +172,13 @@ export default function Participation() {
             } else setSure(true);
           }}
         >
-          {sure ? 'Klik lagi untuk menghapus semua data simulasi' : 'Reset data simulasi'}
+          {gasEnabled()
+            ? sure
+              ? 'Klik lagi untuk menghapus data di perangkat ini'
+              : 'Reset data di perangkat ini'
+            : sure
+              ? 'Klik lagi untuk menghapus semua data simulasi'
+              : 'Reset data simulasi'}
         </button>
       </div>
     </div>

@@ -1,10 +1,10 @@
 // Semua isi yang perlu diedit tim ada di berkas ini.
 // Bagian bertanda "ISI:" adalah placeholder yang harus diganti sebelum dikumpulkan.
 
-export const STORAGE_KEY = 'simpul.sim.v1';
+export const STORAGE_KEY = 'simpul.sim.v2';
 
 // Aturan simulasi (dipakai logika voting dan aspirasi).
-export const MEMBER_BASE = 240; // anggota aktif simulasi (data simulasi, bukan anggota nyata)
+export const MEMBER_BASE = 0; // basis awal kosong; anggota bertambah lewat pendaftaran simulasi
 export const QUORUM = 0.3; // 30% anggota aktif
 export const ASP_REVIEW = 25; // dukungan agar aspirasi dikaji Komite Kebijakan
 export const ASP_AGENDA = 100; // dukungan agar aspirasi wajib masuk agenda Rembuk
@@ -187,7 +187,7 @@ export const ballots = [
       { id: 'lapor', label: 'Boleh jika dilaporkan terbuka' },
       { id: 'bebas', label: 'Tidak perlu diatur' },
     ],
-    seed: { larang: 31, lapor: 29, bebas: 11 },
+    seed: { larang: 0, lapor: 0, bebas: 0 },
     rule: 'Sah jika kuorum 30% anggota aktif terpenuhi. Opsi dengan suara terbanyak menjadi sikap partai.',
   },
   {
@@ -201,147 +201,20 @@ export const ballots = [
       { id: 'batas', label: 'Terima dengan batas dan laporan terbuka' },
       { id: 'terima', label: 'Terima tanpa batas' },
     ],
-    seed: { tolak: 104, batas: 51, terima: 9 },
+    seed: { tolak: 0, batas: 0, terima: 0 },
     rule: 'Sah jika kuorum 30% anggota aktif terpenuhi. Opsi dengan suara terbanyak menjadi sikap partai.',
-    outcome: {
-      decision: 'Simpul menolak seluruh donasi dari perusahaan platform digital.',
-      followUp:
-        'Dimuat di Kebijakan Pendanaan dalam 3 hari. Komite Integritas mencatat pelaksanaannya di laporan bulanan.',
-    },
   },
 ];
 
 export const forumCategories = ['Kerja layak platform', 'Anggaran terbuka', 'Hak digital', 'Organisasi'];
 
-// Utas awal (data simulasi, ditulis oleh "anggota simulasi").
-export const forumSeed = [
-  {
-    id: 't-algoritma',
-    title: 'Apa yang paling perlu dibuka dari algoritma aplikasi ojek?',
-    cat: 'Kerja layak platform',
-    posts: [
-      {
-        id: 'p1',
-        author: 'Anggota simulasi 07',
-        at: '2026-11-16T09:12:00+07:00',
-        text: 'Kalau hanya boleh menuntut satu hal: alasan tertulis kenapa sebuah akun dinonaktifkan. Setuju?',
-      },
-      {
-        id: 'p2',
-        author: 'Anggota simulasi 12',
-        at: '2026-11-16T10:40:00+07:00',
-        text: 'Setuju, tetapi tarif per perjalanan juga perlu terbuka. Tanpa itu kita tidak punya bahan pembanding.',
-      },
-      {
-        id: 'p3',
-        author: 'Anggota simulasi 03',
-        at: '2026-11-17T08:05:00+07:00',
-        text: 'Bisa kita gabungkan dengan aspirasi transparansi komisi supaya hitungan dukungannya jadi satu?',
-      },
-    ],
-  },
-  {
-    id: 't-ktp',
-    title: 'Bagaimana memverifikasi anggota tanpa menyimpan data KTP?',
-    cat: 'Hak digital',
-    posts: [
-      {
-        id: 'p1',
-        author: 'Anggota simulasi 21',
-        at: '2026-11-15T19:30:00+07:00',
-        text: 'Verifikasi itu perlu supaya tidak ada akun ganda, tetapi menyimpan KTP anggota terlalu berisiko. Ada opsi lain?',
-      },
-      {
-        id: 'p2',
-        author: 'Anggota simulasi 05',
-        at: '2026-11-15T20:02:00+07:00',
-        text: 'Email kampus atau pendamping dari Simpul Wilayah bisa memverifikasi, lalu buktinya dibuang setelah akun aktif.',
-      },
-    ],
-  },
-  {
-    id: 't-apbd',
-    title: 'Format apa yang paling berguna untuk data APBD?',
-    cat: 'Anggaran terbuka',
-    posts: [
-      {
-        id: 'p1',
-        author: 'Anggota simulasi 14',
-        at: '2026-11-14T13:20:00+07:00',
-        text: 'Saya usul CSV per program dan satu halaman ringkasan yang bisa dibaca orang yang tidak terbiasa dengan istilah anggaran.',
-      },
-    ],
-  },
-  {
-    id: 't-jubir',
-    title: 'Apakah masa jabatan juru bicara tiga bulan terlalu singkat?',
-    cat: 'Organisasi',
-    posts: [
-      {
-        id: 'p1',
-        author: 'Anggota simulasi 09',
-        at: '2026-11-13T16:45:00+07:00',
-        text: 'Tiga bulan membuat tidak ada figur tunggal, tetapi juru bicara baru butuh waktu belajar. Bagaimana menjaga kesinambungan?',
-      },
-      {
-        id: 'p2',
-        author: 'Anggota simulasi 18',
-        at: '2026-11-13T17:30:00+07:00',
-        text: 'Serah terima tertulis dan pendampingan satu bulan oleh juru bicara sebelumnya mungkin cukup.',
-      },
-    ],
-  },
-];
+// Mulai tanpa utas contoh; topik muncul saat anggota mengirimkannya.
+export const forumSeed = [];
 
 export const aspCategories = [...forumCategories.slice(0, 3), 'Pengaduan integritas', 'Lainnya'];
 
-// Aspirasi awal (data simulasi). base = jumlah dukungan awal.
-export const aspSeed = [
-  {
-    id: 'a-komisi',
-    title: 'Komisi aplikasi ojek online wajib dipublikasikan per perjalanan',
-    cat: 'Kerja layak platform',
-    author: 'Anggota simulasi 07',
-    text: 'Pengemudi dan penumpang perlu tahu berapa persen dari setiap perjalanan yang menjadi komisi aplikasi.',
-    base: 112,
-    note: 'Melewati ambang 100 dukungan, masuk agenda Rembuk Pekanan #13.',
-  },
-  {
-    id: 'a-apbd',
-    title: 'Ringkasan APBD kota dalam CSV dan bahasa sederhana',
-    cat: 'Anggaran terbuka',
-    author: 'Anggota simulasi 14',
-    text: 'Setiap program anggaran punya satu baris data dan satu paragraf penjelasan yang tidak memakai istilah teknis.',
-    base: 64,
-    note: 'Dikaji Kursi Kebijakan, jawaban tertulis dijanjikan dalam 7 hari.',
-  },
-  {
-    id: 'a-literasi',
-    title: 'Kelas literasi data pribadi untuk mahasiswa baru',
-    cat: 'Hak digital',
-    author: 'Anggota simulasi 21',
-    text: 'Dua jam pengenalan pengaturan privasi, cara mengenali phishing, dan hak atas data pribadi.',
-    base: 38,
-  },
-  {
-    id: 'a-banding',
-    title: 'Kanal banding untuk akun pengemudi yang dinonaktifkan sepihak',
-    cat: 'Kerja layak platform',
-    author: 'Anggota simulasi 12',
-    text: 'Pengemudi mengisi satu formulir dan mendapat balasan tertulis beserta alasan dalam 7 hari kerja.',
-    base: 19,
-  },
-  {
-    id: 'a-pengamat',
-    title: 'Rembuk Pekanan terbuka bagi simpatisan sebagai pengamat',
-    cat: 'Organisasi',
-    author: 'Anggota simulasi 03',
-    text: 'Simpatisan boleh melihat jalannya pembahasan, tetapi tidak memegang hak suara.',
-    base: 140,
-    decided: true,
-    note: 'Diputuskan pada Rembuk Pekanan #10 dan berlaku sejak Rembuk #11.',
-  },
-];
+// Mulai tanpa aspirasi atau dukungan contoh.
+export const aspSeed = [];
 
 export const rulesMatrix = {
   columns: [
@@ -442,20 +315,6 @@ export const news = [
     date: '[tanggal publikasi]',
     title: 'Platform partisipasi Simpul dibuka untuk uji coba',
     text: 'Voting, forum, dan aspirasi di halaman ini bisa dicoba tanpa akun. Semua data tersimpan di browser masing-masing dan bisa direset kapan saja.',
-  },
-  {
-    id: 'n-donasi',
-    type: 'berita',
-    date: 'Data simulasi',
-    title: 'Rembuk Pekanan #11: anggota menolak donasi dari perusahaan platform',
-    text: '104 dari 164 suara memilih menolak seluruh donasi. Keputusan ditetapkan sebagai Kebijakan Pendanaan.',
-  },
-  {
-    id: 'n-komisi',
-    type: 'berita',
-    date: 'Data simulasi',
-    title: 'Aspirasi transparansi komisi aplikasi masuk agenda Rembuk',
-    text: 'Usulan mencapai 112 dukungan, melewati ambang 100, sehingga wajib dibahas di Rembuk Pekanan #13.',
   },
   {
     id: 'n-medsos',

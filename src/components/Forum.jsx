@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { forumCategories } from '../data/site.js';
-import { useSim, currentMember, demoMember, postThread, postReply, reportPost } from '../lib/store.js';
+import { useSim, currentMember, demoMember, postThread, postReply, reportPost, forumView } from '../lib/store.js';
+import { gasEnabled } from '../lib/gas.js';
+import { useRealtimeData } from '../hooks/useRealtimeData.js';
 import { Gate, fmt } from './ui.jsx';
 
 const lastAt = (t) => Math.max(...t.posts.map((p) => +new Date(p.at)));
@@ -8,13 +10,21 @@ const lastAt = (t) => Math.max(...t.posts.map((p) => +new Date(p.at)));
 function Reply({ thread, member }) {
   const [text, setText] = useState('');
   const [err, setErr] = useState('');
-  function submit(e) {
+  const [busy, setBusy] = useState(false);
+  // Balasan langsung muncul di topik; kolom dikosongkan setelah server menerima.
+  async function submit(e) {
     e.preventDefault();
-    const r = postReply(member.id, thread.id, text);
-    if (r.ok) {
-      setText('');
-      setErr('');
-    } else setErr(r.reason);
+    if (busy) return;
+    setBusy(true);
+    try {
+      const r = await postReply(member.id, thread.id, text);
+      if (r.ok) {
+        setText('');
+        setErr('');
+      } else setErr(r.reason);
+    } finally {
+      setBusy(false);
+    }
   }
   return (
     <form className="compose" onSubmit={submit} noValidate>
@@ -35,8 +45,8 @@ function Reply({ thread, member }) {
           {err}
         </p>
       )}
-      <button className="btn btn--primary btn--sm" type="submit">
-        Kirim balasan
+      <button className="btn btn--primary btn--sm" type="submit" disabled={busy}>
+        {busy ? 'Mengirim...' : 'Kirim balasan'}
       </button>
     </form>
   );
@@ -45,14 +55,21 @@ function Reply({ thread, member }) {
 function NewThread({ member, onCreated }) {
   const [v, setV] = useState({ title: '', cat: forumCategories[0], text: '' });
   const [err, setErr] = useState('');
-  function submit(e) {
+  const [busy, setBusy] = useState(false);
+  async function submit(e) {
     e.preventDefault();
-    const r = postThread(member.id, v);
-    if (r.ok) {
-      setV({ title: '', cat: forumCategories[0], text: '' });
-      setErr('');
-      onCreated(r.id);
-    } else setErr(r.reason);
+    if (busy) return;
+    setBusy(true);
+    try {
+      const r = await postThread(member.id, v);
+      if (r.ok) {
+        setV({ title: '', cat: forumCategories[0], text: '' });
+        setErr('');
+        onCreated(r.id);
+      } else setErr(r.reason);
+    } finally {
+      setBusy(false);
+    }
   }
   return (
     <form className="compose compose--new" onSubmit={submit} noValidate>
@@ -98,8 +115,8 @@ function NewThread({ member, onCreated }) {
           {err}
         </p>
       )}
-      <button className="btn btn--primary" type="submit">
-        Terbitkan topik
+      <button className="btn btn--primary" type="submit" disabled={busy}>
+        {busy ? 'Menerbitkan...' : 'Terbitkan topik'}
       </button>
     </form>
   );
@@ -110,7 +127,8 @@ export default function Forum() {
   const member = currentMember(s);
   const [open, setOpen] = useState(null);
   const [showNew, setShowNew] = useState(false);
-  const threads = [...s.forum].sort((a, b) => lastAt(b) - lastAt(a));
+  const { loading } = useRealtimeData(); // topik dan komentar diperbarui otomatis bila tersambung ke Google Spreadsheet
+  const threads = [...forumView(s)].sort((a, b) => lastAt(b) - lastAt(a));
 
   return (
     <div className="forum">
@@ -127,7 +145,10 @@ export default function Forum() {
       </div>
 
       {!member && (
-        <Gate what="menulis di forum" extra="Menekan Laporkan pada sebuah unggahan otomatis memasukkanmu sebagai anggota demo." />
+        <Gate
+          what="menulis di forum"
+          extra={gasEnabled() ? undefined : 'Menekan Laporkan pada sebuah unggahan otomatis memasukkanmu sebagai anggota demo.'}
+        />
       )}
 
       {member && (
@@ -156,7 +177,7 @@ export default function Forum() {
       )}
 
       {threads.length === 0 ? (
-        <p className="empty">Belum ada topik. Jadilah yang pertama membuka diskusi.</p>
+        <p className="empty">{loading ? 'Memuat topik...' : 'Belum ada topik. Jadilah yang pertama membuka diskusi.'}</p>
       ) : (
         <div className="threads">
           {threads.map((t) => (
@@ -192,7 +213,8 @@ export default function Forum() {
                           type="button"
                           className="linkbtn"
                           onClick={() => {
-                            if (!member) demoMember();
+                            // Laporan hanya berlaku di perangkat ini, jadi mode Google Spreadsheet tidak perlu membuat anggota demo.
+                            if (!member && !gasEnabled()) demoMember();
                             reportPost(t.id, p.id);
                           }}
                         >

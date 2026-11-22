@@ -8,7 +8,9 @@ import {
   supportAspiration,
   supportCount,
   aspStatus,
+  aspView,
 } from '../lib/store.js';
+import { useRealtimeData } from '../hooks/useRealtimeData.js';
 import { Gate } from './ui.jsx';
 
 const STAGE = {
@@ -38,14 +40,22 @@ function Route({ stage }) {
 function Composer({ member, onSent }) {
   const [v, setV] = useState({ title: '', cat: aspCategories[0], text: '' });
   const [err, setErr] = useState('');
-  function submit(e) {
+  const [busy, setBusy] = useState(false);
+  // Usulan langsung muncul di daftar (menunggu konfirmasi server); formulir dikosongkan setelah server menerima.
+  async function submit(e) {
     e.preventDefault();
-    const r = submitAspiration(member.id, v);
-    if (r.ok) {
-      setV({ title: '', cat: aspCategories[0], text: '' });
-      setErr('');
-      onSent();
-    } else setErr(r.reason);
+    if (busy) return;
+    setBusy(true);
+    try {
+      const r = await submitAspiration(member.id, v);
+      if (r.ok) {
+        setV({ title: '', cat: aspCategories[0], text: '' });
+        setErr('');
+        onSent();
+      } else setErr(r.reason);
+    } finally {
+      setBusy(false);
+    }
   }
   return (
     <form className="compose compose--new" onSubmit={submit} noValidate>
@@ -93,8 +103,8 @@ function Composer({ member, onSent }) {
           {err}
         </p>
       )}
-      <button className="btn btn--primary" type="submit">
-        Ajukan aspirasi
+      <button className="btn btn--primary" type="submit" disabled={busy}>
+        {busy ? 'Mengirim aspirasi...' : 'Ajukan aspirasi'}
       </button>
     </form>
   );
@@ -108,6 +118,8 @@ export default function Aspirations() {
   const [msg, setMsg] = useState('');
   const [auto, setAuto] = useState('');
   const [ticked, setTicked] = useState('');
+  const [sending, setSending] = useState('');
+  const { loading } = useRealtimeData(); // daftar dan jumlah dukungan diperbarui otomatis bila tersambung ke Google Spreadsheet
 
   useEffect(() => {
     if (!sent) return;
@@ -115,17 +127,28 @@ export default function Aspirations() {
     return () => clearTimeout(id);
   }, [sent]);
 
-  const items = [...s.asp].sort((a, b) =>
+  const items = [...aspView(s)].sort((a, b) =>
     sort === 'top' ? supportCount(s, b) - supportCount(s, a) : +new Date(b.at || 0) - +new Date(a.at || 0),
   );
 
   // Pengunjung yang menekan Dukung otomatis masuk sebagai anggota demo, sama seperti di Peron Suara.
-  function support(id) {
-    const m = member || demoMember();
-    const r = supportAspiration(m.id, id);
-    setMsg(r.ok ? '' : r.reason);
-    setAuto(r.ok && !member ? `${m.nick} (${m.id})` : '');
-    setTicked(r.ok ? id : '');
+  // Hitungan dan tombol langsung berubah; bila server menolak, dukungan dibatalkan dan pesan tampil.
+  async function support(id) {
+    if (sending) return;
+    setSending(id);
+    try {
+      const m = member || (await demoMember());
+      if (!m) {
+        setMsg('Belum bisa membuat anggota demo. Periksa koneksi internet lalu coba lagi.');
+        return;
+      }
+      const r = await supportAspiration(m.id, id);
+      setMsg(r.ok ? '' : r.reason);
+      setAuto(r.ok && !member ? `${m.nick} (${m.id})` : '');
+      setTicked(r.ok ? id : '');
+    } finally {
+      setSending('');
+    }
   }
 
   return (
@@ -171,7 +194,7 @@ export default function Aspirations() {
       )}
 
       {items.length === 0 ? (
-        <p className="empty">Belum ada aspirasi. Ajukan usulan pertama.</p>
+        <p className="empty">{loading ? 'Memuat aspirasi...' : 'Belum ada aspirasi. Ajukan usulan pertama.'}</p>
       ) : (
         <ul className="asp__list">
           {items.map((a) => {
@@ -203,9 +226,10 @@ export default function Aspirations() {
                       type="button"
                       className={`btn btn--ghost btn--sm${mine ? ' btn--done' : ''}`}
                       aria-disabled={mine || undefined}
+                      disabled={Boolean(sending)}
                       onClick={() => !mine && support(a.id)}
                     >
-                      {mine ? 'Sudah kamu dukung' : 'Dukung usulan ini'}
+                      {mine ? 'Sudah kamu dukung' : sending === a.id ? 'Mengirim dukungan...' : 'Dukung usulan ini'}
                     </button>
                   )}
                 </div>

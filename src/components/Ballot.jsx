@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { ballots, MEMBER_BASE, QUORUM } from '../data/site.js';
+import { ballots, QUORUM } from '../data/site.js';
 import { useSim, currentMember, tally, castVote, demoMember } from '../lib/store.js';
 import { emitState } from '../lib/signal.js';
+import { useRealtimeData } from '../hooks/useRealtimeData.js';
 import { LineBadge } from './ui.jsx';
 
 const dec = (n) => n.toFixed(1).replace('.', ',');
 
 export default function Ballot({ ballotId, compact = false }) {
   const s = useSim();
+  useRealtimeData(); // hasil dan total anggota diperbarui otomatis bila situs tersambung ke Google Spreadsheet
   const ballot = ballots.find((b) => b.id === ballotId);
   const member = currentMember(s);
   const t = tally(s, ballot);
@@ -18,6 +20,7 @@ export default function Ballot({ ballotId, compact = false }) {
 
   const [choice, setChoice] = useState('');
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
   const [grown, setGrown] = useState(false);
   const [qOn, setQOn] = useState(false);
   const result = useRef(null);
@@ -51,20 +54,32 @@ export default function Ballot({ ballotId, compact = false }) {
     }
   }, [receipt]);
 
-  function submit(e) {
+  // castVote langsung mengubah tampilan (hasil muncul seketika); bila server menolak, suara dibatalkan dan pesan tampil.
+  async function submit(e) {
     e.preventDefault();
+    if (busy) return;
     if (!choice) {
       setError('Pilih satu opsi dulu, lalu tekan tombol suara.');
       return;
     }
-    const m = member || demoMember();
-    const r = castVote(ballot.id, m.id, choice);
-    if (!r.ok) {
-      setError(r.reason);
-      return;
+    setBusy(true);
+    try {
+      const m = member || (await demoMember());
+      if (!m) {
+        setError('Belum bisa membuat anggota demo. Periksa koneksi internet lalu coba lagi.');
+        return;
+      }
+      justVoted.current = true;
+      const r = await castVote(ballot.id, m.id, choice);
+      if (!r.ok) {
+        justVoted.current = false;
+        setError(r.reason);
+        return;
+      }
+      setError('');
+    } finally {
+      setBusy(false);
     }
-    setError('');
-    justVoted.current = true;
   }
 
   const leaderLabel = t.leader ? ballot.options.find((o) => o.id === t.leader)?.label : null;
@@ -107,8 +122,8 @@ export default function Ballot({ ballotId, compact = false }) {
               {error}
             </p>
           )}
-          <button className="btn btn--primary" type="submit">
-            {member ? 'Beri suara' : 'Beri suara sebagai anggota demo'}
+          <button className="btn btn--primary" type="submit" disabled={busy}>
+            {busy ? 'Mengirim suara...' : member ? 'Beri suara' : 'Beri suara sebagai anggota demo'}
           </button>
           {!member && (
             <p className="ballot__hint">
@@ -158,7 +173,9 @@ export default function Ballot({ ballotId, compact = false }) {
           <span className="quorum__fill" style={{ width: qOn ? `${Math.min(100, (t.total / t.needed) * 100)}%` : '0%' }} />
         </div>
         <p className="quorum__text">
-          Partisipasi {t.total} dari {MEMBER_BASE} anggota aktif simulasi ({turnout}%).{' '}
+          {t.electorate
+            ? `Partisipasi ${t.total} dari ${t.electorate} anggota aktif simulasi (${turnout}%). `
+            : `Belum ada anggota aktif simulasi; ${t.total} suara masuk. `}
           {t.quorumMet
             ? closed
               ? `Kuorum ${QUORUM * 100}% tercapai.`
@@ -192,7 +209,7 @@ export default function Ballot({ ballotId, compact = false }) {
         </div>
       )}
 
-      <p className="ballot__rule">{ballot.rule} Satu anggota satu suara. Data awal adalah suara simulasi.</p>
+      <p className="ballot__rule">{ballot.rule} Satu anggota satu suara.</p>
     </article>
   );
 }

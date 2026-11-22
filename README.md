@@ -37,9 +37,42 @@ Satu tema: sinyal berjalan di jalur menuju simpul. Hero dibuka berurutan, aksi (
 ## Untuk pameran dan bukti simulasi
 
 - Tombol "Reset data simulasi" (bagian Digital Participation) menghapus data di perangkat itu.
-- Angka awal (240 anggota aktif simulasi, 71 suara awal, aspirasi dan utas contoh) adalah data simulasi dan diberi label di halaman.
+- Data awal voting, aspirasi, forum, dan anggota aktif dimulai dari 0. Data yang ditambahkan pengguna disimpan di browser masing-masing.
 - Ambil tangkapan layar hasil voting, forum, dan aspirasi sebagai bukti simulasi partisipasi.
 
 ## Berkas penyerta
 
 Proposal, slide, paket media sosial, bukti simulasi, dan daftar kontribusi ada di folder `deliverables/`. Daftar isi dan hal yang harus dilengkapi tim ada di `deliverables/README.md`.
+
+## Menyimpan data di Google Spreadsheet (opsional)
+
+Tanpa pengaturan apa pun, situs berjalan sendiri dan menyimpan data di browser masing-masing. Untuk pameran, data bisa
+dibagi lewat Google Spreadsheet sehingga angka anggota, hasil voting, aspirasi, dan forum tampil sama di semua perangkat.
+
+1. Pasang `google-apps-script/Code.gs` sebagai Web App (langkahnya ada di komentar atas berkas itu dan di balasan penyusunnya:
+   buka Spreadsheet, Extensions > Apps Script, tempel kode, jalankan `setup`, lalu Deploy > Web app dengan akses Anyone).
+2. Salin alamat Web App yang berakhiran `/exec`.
+3. Lokal: salin `.env.example` menjadi `.env` dan isi `VITE_GAS_WEBAPP_URL=<alamat tadi>`. Vercel: Project Settings >
+   Environment Variables, tambahkan `VITE_GAS_WEBAPP_URL` untuk Production dan Preview.
+4. Build ulang (`npm run build`). Nilainya tertanam saat build, jadi mengubahnya selalu butuh build ulang.
+
+Perilaku bila variabel terisi:
+
+- Pendaftaran menunggu server memberi MemberID, lalu kartu tampil dan tersimpan di localStorage agar sesi bertahan saat refresh.
+- Suara, aspirasi, dukungan, dan komentar langsung tampil di layar, lalu dikirim di latar belakang. Bila server menolak, tampilannya
+  dibatalkan dan pesan tampil.
+- Data dibaca ulang tiap 10 detik tanpa memuat ulang halaman (berhenti saat tab tersembunyi). Bila koneksi putus, data terakhir tetap
+  tampil dan muncul penanda.
+- Semua POST memakai `Content-Type: text/plain;charset=utf-8` agar browser tidak mengirim preflight CORS yang tidak didukung Apps Script.
+
+Yang perlu diketahui:
+
+- **Suara tidak rahasia di Spreadsheet.** Tab Voting menyimpan MemberID di samping Pilihan, jadi siapa pun dengan akses edit
+  Spreadsheet bisa menelusuri pilihan tiap anggota. Sesuaikan teks "rahasia" dan "kotak suara dipisah" di situs bila memakai mode ini.
+- **Endpoint publik.** Siapa pun yang tahu alamat Web App bisa mengirim data. MemberID acak dibuat server dan berfungsi sebagai kunci anggota.
+- **Laporan forum hanya berlaku di perangkat itu.** Apps Script tidak punya tab moderasi.
+- Tombol "Reset data" hanya mengosongkan data di perangkat itu, bukan Spreadsheet. "Hapus data saya" menghapus baris anggota di Spreadsheet
+  dan menganonimkan namanya pada aspirasi dan forum.
+
+Pengujian: `npm test` menjalankan 20 uji (aturan inti, integrasi dengan `Code.gs` memakai tiruan layanan Google, dan balapan antara
+polling dan konfirmasi aksi). Skrip Code.gs di lingkungan Google sungguhan belum diuji otomatis dan perlu dicoba sekali setelah deploy.
