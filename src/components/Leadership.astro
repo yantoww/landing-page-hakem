@@ -3,8 +3,6 @@ import Sign from './Sign.astro';
 import Register from './Register.jsx';
 import { council, bodies } from '../data/site.js';
 
-const placeholder = '[Nama anggota kelompok]';
-
 const tiers = [
   ['Simpatisan', 'Siapa saja. Membaca forum, hasil Rembuk yang sudah ditutup, dan status aspirasi.'],
   ['Anggota', 'Mendaftar lewat formulir. Memilih di Rembuk, mengajukan dan mendukung aspirasi, menulis di forum.'],
@@ -89,7 +87,7 @@ const signup = [
             <li>
               <div class="node">
                 <strong>Dewan Rembuk</strong>
-                <span>Lima kursi kolektif yang menjalankan keputusan Rembuk. Pengisi kursi tampil sebagai nama anggota kelompok.</span>
+                <span>Lima kursi kolektif yang menjalankan keputusan Rembuk.</span>
               </div>
               <ul class="seats">
                 {
@@ -98,7 +96,7 @@ const signup = [
                       <div class="node">
                         <p class="seat__head">
                           <strong>{c.seat}</strong>
-                          <span class={c.name ? 'seat__name' : 'seat__name ph'}>{c.name ?? placeholder}</span>
+                          {c.name && <span class="seat__name">{c.name}</span>}
                         </p>
                         <p>{c.duty}</p>
                         <p class="seat__role">Peran proyek: {c.role}</p>
@@ -114,7 +112,7 @@ const signup = [
                   <div class="node">
                     <p class="seat__head">
                       <strong>{b.body}</strong>
-                      <span class={b.name ? 'seat__name' : 'seat__name ph'}>{b.name ?? placeholder}</span>
+                      {b.name && <span class="seat__name">{b.name}</span>}
                     </p>
                     <span>{b.duty}</span>
                     <span class="seat__role">Peran proyek: {b.role}</span>
