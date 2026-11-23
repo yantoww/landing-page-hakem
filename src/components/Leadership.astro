@@ -2,6 +2,7 @@
 import Sign from './Sign.astro';
 import Register from './Register.jsx';
 import { council, bodies } from '../data/site.js';
+import { gasEnabled } from '../lib/gas.js';
 
 const tiers = [
   ['Simpatisan', 'Siapa saja. Membaca forum, hasil Rembuk yang sudah ditutup, dan status aspirasi.'],
@@ -204,7 +205,11 @@ const signup = [
           aspirasi, dan menulis di forum pada bagian Digital Participation.
         </p>
         <p>
-          Formulir ini hanya simulasi. Tidak ada email, NIK, atau alamat yang diminta, dan datamu tidak meninggalkan browser ini.
+          {
+            gasEnabled()
+              ? 'Formulir ini hanya simulasi. Tidak ada email, NIK, atau alamat yang diminta. Nama panggilan, kelompok, dan isu yang kamu pilih disimpan di Google Spreadsheet panitia, dan bisa kamu hapus kapan saja lewat tombol Hapus data saya.'
+              : 'Formulir ini hanya simulasi. Tidak ada email, NIK, atau alamat yang diminta, dan datamu tidak meninggalkan browser ini.'
+          }
         </p>
       </div>
       <div class="member-zone__tool">

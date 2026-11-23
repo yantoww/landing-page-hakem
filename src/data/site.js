@@ -299,12 +299,12 @@ export const risks = [
   },
 ];
 
-// ISI: ganti tanggal bertanda [..] dan tambahkan kegiatan nyata kelompok.
+// ISI: tambahkan kegiatan nyata kelompok bila ada.
 export const news = [
   {
     id: 'n-pameran',
     type: 'kegiatan',
-    date: '[tanggal menyusul]',
+    date: '27 November 2026',
     title: 'Pameran dan Workshop Partai Digital di FISIP Universitas Airlangga',
     text: 'Coba daftar, memilih, berdiskusi, dan mengajukan aspirasi langsung di stan Simpul. Lima sesi: pengenalan partai dan masalah politik, demo website dan membership, simulasi fitur partisipasi, media sosial dan keunggulan, serta tanya jawab dan refleksi.',
     featured: true,
@@ -312,14 +312,14 @@ export const news = [
   {
     id: 'n-uji',
     type: 'berita',
-    date: '[tanggal publikasi]',
+    date: '27 November 2026',
     title: 'Platform partisipasi Simpul dibuka untuk uji coba',
-    text: 'Voting, forum, dan aspirasi di halaman ini bisa dicoba tanpa akun. Semua data tersimpan di browser masing-masing dan bisa direset kapan saja.',
+    text: 'Voting, forum, dan aspirasi di halaman ini bisa dicoba dengan mendaftar sebagai anggota simulasi atau masuk sebagai anggota demo. Data yang kamu kirim bisa dihapus kapan saja lewat tombol Hapus data saya.',
   },
   {
     id: 'n-medsos',
     type: 'kegiatan',
-    date: '[tautan menyusul]',
+    date: '27 November 2026',
     title: 'Enam konten pertama di media sosial',
     text: 'Pengenalan partai, dua konten edukasi isu, pengenalan kepemimpinan, ajakan mencoba website, dan satu konten interaktif.',
   },

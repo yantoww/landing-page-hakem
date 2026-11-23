@@ -162,24 +162,27 @@ export default function Participation() {
             ? 'Data simulasi dimulai dari nol. Data yang kamu tambahkan tersimpan di Google Spreadsheet panitia dan tampil di semua perangkat. Laporan forum hanya berlaku di perangkat ini.'
             : 'Data simulasi dimulai dari nol. Semua data yang kamu tambahkan hanya tersimpan di browser ini.'}
         </p>
-        <button
-          type="button"
-          className={`btn btn--ghost-light btn--sm${sure ? ' btn--warn' : ''}`}
-          onClick={() => {
-            if (sure) {
-              resetAll();
-              setSure(false);
-            } else setSure(true);
-          }}
-        >
-          {gasEnabled()
-            ? sure
-              ? 'Klik lagi untuk menghapus data di perangkat ini'
-              : 'Reset data di perangkat ini'
-            : sure
-              ? 'Klik lagi untuk menghapus semua data simulasi'
-              : 'Reset data simulasi'}
-        </button>
+        {/* Alat bantu pengembangan: hanya tampil saat npm run dev, tidak ikut build produksi (Vercel). */}
+        {import.meta.env.DEV && (
+          <button
+            type="button"
+            className={`btn btn--ghost-light btn--sm${sure ? ' btn--warn' : ''}`}
+            onClick={() => {
+              if (sure) {
+                resetAll();
+                setSure(false);
+              } else setSure(true);
+            }}
+          >
+            {gasEnabled()
+              ? sure
+                ? 'Klik lagi untuk menghapus data di perangkat ini'
+                : 'Reset data di perangkat ini'
+              : sure
+                ? 'Klik lagi untuk menghapus semua data simulasi'
+                : 'Reset data simulasi'}
+          </button>
+        )}
       </div>
     </div>
   );
