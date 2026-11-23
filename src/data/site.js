@@ -36,8 +36,8 @@ export const stations = [
 export const social = [
   {
     name: 'Instagram',
-    handle: '@isi-akun-instagram',
-    href: '',
+    handle: '@partai.simpul',
+    href: 'https://www.instagram.com/partai.simpul',
     use: 'Konten edukasi isu, pengenalan kepemimpinan, dan ajakan mencoba website.',
   },
   {

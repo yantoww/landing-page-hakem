@@ -197,6 +197,9 @@ test('forum: topik dan balasan dikelompokkan per topik, kategori terbawa, lapora
   const r = await p;
   assert.equal(r.ok, true);
   assert.equal(r.id, threads[0].id, 'ID topik stabil sehingga formulir bisa membukanya');
+  // Tiruan layanan Google berjalan dalam hitungan mikrodetik; jeda ini menjamin cap waktu balasan lebih baru.
+  // Di Apps Script asli penulisan diserialisasi LockService dan butuh puluhan milidetik, jadi tidak terjadi.
+  await new Promise((res) => setTimeout(res, 3));
   const reply = await S.postReply(B.id, r.id, 'Setuju, tarif per perjalanan juga perlu terbuka.');
   assert.equal(reply.ok, true);
   await poll();
