@@ -15,6 +15,8 @@ import {
   forumSeed,
   aspSeed,
   issues as issueList,
+  DEMO_GROUP,
+  DEMO_TTL_MIN,
 } from '../data/site.js';
 import { emitSignal } from './signal.js';
 import { gasEnabled, gasPost } from './gas.js';
@@ -150,6 +152,44 @@ if (hasWindow) {
 
 export const currentMember = (s) => s.members.find((m) => m.id === s.currentId) || null;
 
+// Anggota demo (mode Google Spreadsheet) bersifat sementara: dihapus menyeluruh di server saat selesai atau
+// setelah DEMO_TTL_MIN menit. Di mode lokal penanda ini hanya label.
+export const isDemo = (m) => Boolean(m?.demo);
+
+// Buang anggota dari perangkat beserta catatan suara dan dukungannya di perangkat ini.
+function removeMembersLocal(ids) {
+  const gone = new Set(ids);
+  const roll = Object.fromEntries(
+    Object.entries(state.roll).map(([b, v]) => [b, Object.fromEntries(Object.entries(v).filter(([m]) => !gone.has(m)))]),
+  );
+  const supports = Object.fromEntries(Object.entries(state.supports).map(([a, v]) => [a, v.filter((m) => !gone.has(m))]));
+  commit({
+    ...state,
+    members: state.members.filter((m) => !gone.has(m.id)),
+    currentId: gone.has(state.currentId) ? null : state.currentId,
+    roll,
+    supports,
+  });
+}
+
+// Kartu demo yang melewati batas waktu dibuang dari perangkat (server membersihkan datanya sendiri).
+function pruneDemos() {
+  if (!gasEnabled()) return;
+  const cutoff = Date.now() - DEMO_TTL_MIN * 60000;
+  const gone = state.members.filter((m) => m.demo && new Date(m.joined).getTime() < cutoff).map((m) => m.id);
+  if (gone.length) removeMembersLocal(gone);
+}
+
+// Bila server tidak lagi mengenal anggota demo (kedaluwarsa), kartunya dibuang dan pesannya dijelaskan.
+function failReason(memberId, reason) {
+  const m = state.members.find((x) => x.id === memberId);
+  if (m?.demo && /MemberID tidak ditemukan|Hanya anggota terdaftar/i.test(reason)) {
+    removeMembersLocal([memberId]);
+    return `Sesi demo sudah berakhir (dihapus setelah selesai atau ${DEMO_TTL_MIN} menit). Mulai demo baru atau daftar sebagai anggota.`;
+  }
+  return reason;
+}
+
 // ponytail: reset hanya untuk perangkat ini; tidak ada reset jarak jauh karena tidak ada server.
 export function resetAll() {
   if (hasWindow) {
@@ -191,6 +231,7 @@ function confirmOp(id, patch = {}) {
 // data itu mungkin sudah memuat tulisan yang masih ditampilkan sebagai aksi tertunda dan akan terhitung dua kali.
 // Data semacam itu dibuang; polling berikutnya (diminta saat aksi selesai) membawa data yang pasti sudah memuatnya.
 export function setRemote(data, requestedAt) {
+  pruneDemos(); // dipanggil tiap polling, jadi kartu demo yang kedaluwarsa hilang tanpa menunggu aksi
   if (state.pending.some((op) => op.status === 'sending' || op.confirmedAt >= requestedAt)) return;
   const body = {
     totalMembers: Number(data?.totalMembers) || 0,
@@ -273,7 +314,7 @@ export function forumView(s) {
 // ---------- Keanggotaan ----------
 
 // Mode lokal. Mode GAS memakai joinMember (ID anggota dibuat server).
-export function register({ nick, group, issues = [], role = 'Anggota' }) {
+export function register({ nick, group, issues = [], role = 'Anggota', demo = false }) {
   const seq = state.seq + 1;
   const member = {
     id: `SMP-${String(MEMBER_BASE + seq).padStart(4, '0')}`,
@@ -282,6 +323,7 @@ export function register({ nick, group, issues = [], role = 'Anggota' }) {
     issues,
     role,
     joined: now(),
+    ...(demo ? { demo: true } : {}),
   };
   commit({ ...state, seq, members: [...state.members, member], currentId: member.id });
   return member;
@@ -290,11 +332,11 @@ export function register({ nick, group, issues = [], role = 'Anggota' }) {
 const issueName = (id) => issueList.find((i) => i.id === id)?.short || id;
 
 // Mode lokal: sinkron. Mode GAS: Promise yang selesai setelah server memberi MemberID.
-export function joinMember({ nick, group, issues = [], role = 'Anggota' }) {
-  if (!gasEnabled()) return { ok: true, member: register({ nick, group, issues, role }) };
+export function joinMember({ nick, group, issues = [], role = 'Anggota', demo = false }) {
+  if (!gasEnabled()) return { ok: true, member: register({ nick, group, issues, role, demo }) };
   return gasPost('register_member', { nickname: nick.trim(), group, issues: issues.map(issueName) }).then((r) => {
     if (!r.ok) return { ok: false, reason: r.reason };
-    const member = { id: r.data.memberId, nick: r.data.nickname, group, issues, role, joined: now() };
+    const member = { id: r.data.memberId, nick: r.data.nickname, group, issues, role, joined: now(), ...(demo ? { demo: true } : {}) };
     commit({ ...state, seq: state.seq + 1, members: [...state.members, member], currentId: member.id });
     confirmOp(addOp({ type: 'member' }).id);
     return { ok: true, member };
@@ -304,7 +346,7 @@ export function joinMember({ nick, group, issues = [], role = 'Anggota' }) {
 // Mode lokal mengembalikan anggota, mode GAS mengembalikan Promise anggota (atau null bila gagal).
 export function demoMember() {
   const n = (gasEnabled() ? memberTotal(state) : state.seq) + 1;
-  const data = { nick: `Anggota Demo ${n}`, group: 'Lainnya', issues: [], role: 'Anggota' };
+  const data = { nick: `Anggota Demo ${n}`, group: DEMO_GROUP, issues: [], role: 'Anggota', demo: true };
   if (!gasEnabled()) return register(data);
   return joinMember(data).then((r) => (r.ok ? r.member : null));
 }
@@ -333,7 +375,9 @@ export function deleteMember(id) {
   return gasPost('delete_member', { memberId: id }).then((r) => {
     // "Anggota tidak ditemukan" berarti server sudah tidak menyimpannya: aman dihapus dari perangkat.
     if (!r.ok && !/tidak ditemukan/i.test(r.reason)) return { ok: false, reason: r.reason };
-    removeLocal();
+    // Anggota demo dihapus menyeluruh di server, jadi catatan suara dan dukungannya di perangkat ikut dibuang.
+    if (isDemo(state.members.find((m) => m.id === id))) removeMembersLocal([id]);
+    else removeLocal();
     requestRefresh();
     return { ok: true };
   });
@@ -403,7 +447,7 @@ export function castVote(ballotId, memberId, optionId) {
     dropOp(op.id);
     const { [memberId]: _gone, ...rest } = state.roll[ballotId] || {};
     commit({ ...state, roll: { ...state.roll, [ballotId]: rest } });
-    return { ok: false, reason: r.reason };
+    return { ok: false, reason: failReason(memberId, r.reason) };
   });
 }
 
@@ -426,7 +470,7 @@ function sendComment(m, { topic, cat, text }) {
       return { ok: true, id: `t-${hash(topic)}` };
     }
     dropOp(op.id);
-    return { ok: false, reason: r.reason };
+    return { ok: false, reason: failReason(m.id, r.reason) };
   });
 }
 
@@ -523,7 +567,7 @@ export function submitAspiration(memberId, { title, cat, text }) {
     if (!r.ok) {
       dropOp(op.id);
       commit({ ...state, supports: rest });
-      return { ok: false, reason: r.reason };
+      return { ok: false, reason: failReason(m.id, r.reason) };
     }
     const id = r.data.aspirationId;
     commit({ ...state, supports: { ...rest, [id]: mine || [m.id] } });
@@ -561,6 +605,9 @@ export function supportAspiration(memberId, aspId) {
     if (!/sudah mendukung/i.test(r.reason)) {
       commit({ ...state, supports: { ...state.supports, [aspId]: (state.supports[aspId] || []).filter((x) => x !== memberId) } });
     }
-    return { ok: false, reason: r.reason };
+    return { ok: false, reason: failReason(memberId, r.reason) };
   });
 }
+
+// Kartu demo yang sudah melewati batas waktu saat halaman dibuka tidak ditampilkan lagi.
+pruneDemos();

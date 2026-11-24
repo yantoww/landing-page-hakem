@@ -1,10 +1,18 @@
 // Semua isi yang perlu diedit tim ada di berkas ini.
 // Bagian bertanda "ISI:" adalah placeholder yang harus diganti sebelum dikumpulkan.
 
+import { gasEnabled } from '../lib/gas.js';
+
 export const STORAGE_KEY = 'simpul.sim.v2';
+
+// Mode Google Spreadsheet: tab Voting menyimpan ID anggota acak di samping pilihan (bukan nama). Teks tentang
+// kerahasiaan suara mengikuti mode itu supaya tidak menjanjikan hal yang tidak benar.
+const gas = gasEnabled();
 
 // Aturan simulasi (dipakai logika voting dan aspirasi).
 export const MEMBER_BASE = 0; // basis awal kosong; anggota bertambah lewat pendaftaran simulasi
+export const DEMO_GROUP = 'Anggota demo'; // penanda anggota demo (sama dengan DEMO_GROUP di google-apps-script/Code.gs)
+export const DEMO_TTL_MIN = 30; // anggota demo dihapus otomatis setelah sekian menit (mode Google Spreadsheet)
 export const QUORUM = 0.3; // 30% anggota aktif
 export const ASP_REVIEW = 25; // dukungan agar aspirasi dikaji Komite Kebijakan
 export const ASP_AGENDA = 100; // dukungan agar aspirasi wajib masuk agenda Rembuk
@@ -228,7 +236,9 @@ export const rulesMatrix = {
       cells: [
         'Pengunjung membaca. Anggota mengajukan dan mendukung, satu dukungan per anggota untuk tiap usulan.',
         'Pengunjung membaca. Anggota menulis dan membalas. Relawan moderator meninjau laporan.',
-        'Hanya anggota aktif. Satu anggota satu suara, rahasia.',
+        gas
+          ? 'Hanya anggota aktif. Satu anggota satu suara, tanpa nama (hanya ID anggota acak).'
+          : 'Hanya anggota aktif. Satu anggota satu suara, rahasia.',
       ],
     },
     {
@@ -260,7 +270,9 @@ export const rulesMatrix = {
       cells: [
         'Memakai nama panggilan. Penulis boleh memilih tampil anonim.',
         'Memakai nama panggilan, tanpa pelacak lintas situs.',
-        'Kotak suara dipisah dari daftar pemilih, sehingga pilihan tidak terhubung dengan identitas.',
+        gas
+          ? 'Catatan suara memakai ID anggota acak, bukan nama. Hanya pengelola spreadsheet yang bisa melihat pilihan per ID.'
+          : 'Kotak suara dipisah dari daftar pemilih, sehingga pilihan tidak terhubung dengan identitas.',
       ],
     },
   ],
@@ -277,13 +289,17 @@ export const risks = [
     title: 'Manipulasi voting',
     risk: 'Akun ganda atau pendaftaran massal menjelang pemungutan suara mengubah hasil.',
     handling:
-      'Verifikasi anggota, masa tunggu 7 hari sebelum hak suara aktif, dan audit Komite Integritas. Pada simulasi ini satu perangkat bisa membuat banyak anggota demo, jadi hasilnya tidak mewakili sistem nyata.',
+      gas
+        ? `Verifikasi anggota, masa tunggu 7 hari sebelum hak suara aktif, dan audit Komite Integritas. Pada simulasi ini anggota demo hanya sementara: suara dan tulisannya dihapus saat selesai atau setelah ${DEMO_TTL_MIN} menit, jadi tidak membentuk hasil. Hasil tetap tidak mewakili sistem nyata.`
+        : 'Verifikasi anggota, masa tunggu 7 hari sebelum hak suara aktif, dan audit Komite Integritas. Pada simulasi ini satu perangkat bisa membuat banyak anggota demo, jadi hasilnya tidak mewakili sistem nyata.',
   },
   {
     title: 'Penyalahgunaan data',
     risk: 'Data anggota dipakai di luar tujuan atau jatuh ke pihak ketiga.',
     handling:
-      'Data seminimal mungkin, hak hapus kapan saja, aturan platform dibuka untuk audit, dan kotak suara dipisah dari identitas.',
+      gas
+        ? 'Data seminimal mungkin, hak hapus kapan saja, aturan platform dibuka untuk audit, dan catatan suara hanya memakai ID anggota acak, bukan nama.'
+        : 'Data seminimal mungkin, hak hapus kapan saja, aturan platform dibuka untuk audit, dan kotak suara dipisah dari identitas.',
   },
   {
     title: 'Ketimpangan akses',

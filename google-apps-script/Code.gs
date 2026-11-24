@@ -11,7 +11,11 @@
  *   { "action": "submit_aspiration",  "memberId": "M-...", "category": "Hak digital", "title": "...", "text": "...", "anonymous": false }
  *   { "action": "support_aspiration", "memberId": "M-...", "aspirationId": "A-..." }
  *   { "action": "submit_comment",     "memberId": "M-...", "topic": "Judul topik forum", "comment": "...", "category": "Hak digital", "anonymous": false }
- *   { "action": "delete_member",      "memberId": "M-..." }   // hak hapus: baris anggota dihapus, nama pada aspirasi dan forum dianonimkan
+ *   { "action": "delete_member",      "memberId": "M-..." }   // hak hapus (lihat deleteMember_)
+ *
+ * ANGGOTA DEMO: register_member dengan group "Anggota demo" membuat anggota sementara. delete_member pada anggota demo
+ * menghapus menyeluruh semua jejaknya (suara, dukungan, aspirasi, komentar), dan server membersihkan yang
+ * lebih tua dari CONFIG.DEMO_TTL_MIN menit secara otomatis. Anggota terdaftar tidak terpengaruh.
  *
  * Respons selalu JSON: { "status": "success" | "error", "message": "...", "data": ... }
  * (Apps Script selalu membalas HTTP 200, jadi periksa field status.)
@@ -34,10 +38,18 @@ var CONFIG = {
   ASPIRATION_LIMIT: 50, // jumlah aspirasi terbaru yang dikembalikan doGet
   FORUM_LIMIT: 100, // jumlah komentar terbaru yang dikembalikan doGet
   LOCK_WAIT_MS: 30000, // tunggu giliran tulis agar tidak terjadi double-voting saat dua permintaan bersamaan
-  // Opsional: batasi topik dan opsi voting yang diterima. Kosong berarti menerima semua.
-  // Contoh: { 'rembuk-12': ['larang', 'lapor', 'bebas'] }
-  VOTING_OPTIONS: {},
+  // Topik dan opsi voting yang diterima (id sama dengan ballots di src/data/site.js). Permintaan di luar daftar
+  // ditolak, jadi tidak ada topik acak yang bisa dibuat dari luar. Kosongkan ({}) untuk menerima semua topik.
+  VOTING_OPTIONS: { 'rembuk-12': ['larang', 'lapor', 'bebas'] },
+  // Anggota demo bersifat sementara: dihapus menyeluruh saat selesai, atau otomatis setelah DEMO_TTL_MIN menit.
+  DEMO_TTL_MIN: 30,
+  DEMO_PURGE_EVERY_S: 60, // seberapa sering pembersihan kedaluwarsa dijalankan (dipicu permintaan, tanpa trigger)
+  DEMO_BATCH: 20, // maksimal anggota demo yang dibersihkan per putaran agar tidak menahan penulisan lain
 };
+
+// KategoriKelompok yang menandai anggota demo. Server yang memutuskan siapa demo dari baris Anggota,
+// bukan dari permintaan klien, jadi anggota terdaftar tidak bisa meminta penghapusan suaranya.
+var DEMO_GROUP = 'Anggota demo';
 
 // Kolom A sampai G pada Aspirasi sesuai rancangan. Kolom H (AspirasiID) dan I (Pendukung) adalah
 // tambahan yang diperlukan agar dukungan bisa menunjuk satu aspirasi dan satu anggota tidak bisa
@@ -72,6 +84,7 @@ function doPost(e) {
       throw new UserError('Action tidak dikenal. Pilihan: ' + Object.keys(ACTIONS).join(', ') + '.');
     }
     lock.waitLock(CONFIG.LOCK_WAIT_MS);
+    purgeDemosIfDue_(true);
     var result = handler(body);
     SpreadsheetApp.flush(); // pastikan tulisan terlihat oleh GET berikutnya sebelum membalas
     return respond_({ status: 'success', message: result.message, data: result.data });
@@ -84,6 +97,7 @@ function doPost(e) {
 
 function doGet() {
   try {
+    purgeDemosIfDue_(false);
     var members = rows_(sheet_(SHEETS.MEMBERS));
     var votes = rows_(sheet_(SHEETS.VOTES));
     var aspirations = rows_(sheet_(SHEETS.ASPIRATIONS));
@@ -210,7 +224,8 @@ function submitComment_(b) {
   return { message: 'Komentar terkirim.', data: { topic: topic } };
 }
 
-// Hak hapus. Baris anggota dihapus dan nama pada aspirasi dan forum diganti. Jejak "sudah memilih"
+// Hak hapus. Anggota demo: dihapus menyeluruh (anggota, suara, dukungan, aspirasi, dan komentarnya), tanpa jejak.
+// Anggota terdaftar: baris anggota dihapus dan nama pada aspirasi dan forum diganti. Jejak "sudah memilih"
 // di tab Voting tetap ada (tanpa nama) agar satu orang tidak bisa memilih dua kali.
 function deleteMember_(b) {
   var id = String(b.memberId || '').trim().toUpperCase();
@@ -225,6 +240,10 @@ function deleteMember_(b) {
     }
   }
   if (index === -1) throw new UserError('Anggota tidak ditemukan atau sudah dihapus.');
+  if (plain_(rows[index][3]) === DEMO_GROUP) {
+    purgeMembers_([id]);
+    return { message: 'Data demo dihapus.', data: { memberId: id, purged: true } };
+  }
   members.deleteRow(index + 2); // baris 1 adalah header
   [SHEETS.ASPIRATIONS, SHEETS.FORUM].forEach(function (def) {
     var sheet = sheet_(def);
@@ -233,6 +252,73 @@ function deleteMember_(b) {
     });
   });
   return { message: 'Datamu dihapus.', data: { memberId: id } };
+}
+
+// Hapus menyeluruh semua jejak sekumpulan anggota (dipakai untuk anggota demo): tulisan aspirasi mereka dihapus,
+// dukungan mereka pada aspirasi lain dicabut, lalu suara, komentar, dan baris anggotanya dihapus.
+// Dibaca sekali per tab dan dihapus dari bawah ke atas agar nomor baris tidak bergeser.
+function purgeMembers_(ids) {
+  var set = Object.create(null);
+  ids.forEach(function (id) {
+    set[String(id).toUpperCase()] = true;
+  });
+  var inSet = function (v) {
+    return set[String(v).toUpperCase()] === true;
+  };
+
+  var asp = sheet_(SHEETS.ASPIRATIONS);
+  var aRows = rows_(asp);
+  for (var i = aRows.length - 1; i >= 0; i--) {
+    var r = aRows[i];
+    if (inSet(r[1])) {
+      asp.deleteRow(i + 2);
+      continue;
+    }
+    var supporters = String(r[8]).split(',').filter(Boolean);
+    var kept = supporters.filter(function (s) {
+      return !inSet(s);
+    });
+    if (kept.length !== supporters.length) {
+      asp.getRange(i + 2, 7).setValue(Math.max(0, (Number(r[6]) || 0) - (supporters.length - kept.length)));
+      asp.getRange(i + 2, 9).setValue(kept.join(','));
+    }
+  }
+  [SHEETS.VOTES, SHEETS.FORUM, SHEETS.MEMBERS].forEach(function (def) {
+    var sheet = sheet_(def);
+    var rows = rows_(sheet);
+    for (var j = rows.length - 1; j >= 0; j--) {
+      if (inSet(rows[j][1])) sheet.deleteRow(j + 2);
+    }
+  });
+}
+
+// Bersihkan anggota demo yang melewati DEMO_TTL_MIN. Dipicu permintaan (tanpa trigger), paling sering sekali per
+// DEMO_PURGE_EVERY_S. haveLock: true bila pemanggil (doPost) sudah memegang kunci tulis.
+function purgeDemosIfDue_(haveLock) {
+  try {
+    var cache = CacheService.getScriptCache();
+    if (cache.get('demoPurge')) return;
+    cache.put('demoPurge', '1', CONFIG.DEMO_PURGE_EVERY_S);
+    var lock = null;
+    if (!haveLock) {
+      lock = LockService.getScriptLock();
+      if (!lock.tryLock(3000)) return;
+    }
+    try {
+      var cutoff = Date.now() - CONFIG.DEMO_TTL_MIN * 60000;
+      var ids = [];
+      rows_(sheet_(SHEETS.MEMBERS)).forEach(function (r) {
+        if (ids.length < CONFIG.DEMO_BATCH && plain_(r[3]) === DEMO_GROUP && new Date(r[0]).getTime() < cutoff) {
+          ids.push(String(r[1]).toUpperCase());
+        }
+      });
+      if (ids.length) purgeMembers_(ids);
+    } finally {
+      if (lock) lock.releaseLock();
+    }
+  } catch (err) {
+    console.error(err && err.stack ? err.stack : String(err)); // pembersihan tidak boleh menggagalkan permintaan utama
+  }
 }
 
 // ---------- Pembantu ----------

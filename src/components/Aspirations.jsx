@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { aspCategories, ASP_REVIEW, ASP_AGENDA } from '../data/site.js';
+import { aspCategories, ASP_REVIEW, ASP_AGENDA, DEMO_TTL_MIN } from '../data/site.js';
+import { gasEnabled } from '../lib/gas.js';
 import {
   useSim,
   currentMember,
@@ -159,7 +160,14 @@ export default function Aspirations() {
       </p>
 
       {!member ? (
-        <Gate what="mengajukan aspirasi" extra="Menekan Dukung pada usulan di bawah otomatis memasukkanmu sebagai anggota demo." />
+        <Gate
+          what="mengajukan aspirasi"
+          extra={
+            gasEnabled()
+              ? `Menekan Dukung pada usulan di bawah otomatis memasukkanmu sebagai anggota demo sementara (dihapus setelah selesai atau ${DEMO_TTL_MIN} menit).`
+              : 'Menekan Dukung pada usulan di bawah otomatis memasukkanmu sebagai anggota demo.'
+          }
+        />
       ) : (
         <Composer member={member} onSent={() => setSent(true)} />
       )}

@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useSim, demoMember, signIn, signOut, currentMember } from '../lib/store.js';
+import { useSim, demoMember, signIn, signOut, currentMember, deleteMember, isDemo } from '../lib/store.js';
+import { gasEnabled } from '../lib/gas.js';
+import { DEMO_TTL_MIN } from '../data/site.js';
 
 export const asset = (p) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${p}`;
 
@@ -72,18 +74,46 @@ export function Gate({ what, extra }) {
 export function MemberBar() {
   const s = useSim();
   const m = currentMember(s);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
   if (!m)
     return (
       <p className="memberbar">
         Kamu membaca sebagai pengunjung. Memilih, mendukung, dan menulis hanya untuk anggota.
       </p>
     );
+  // Anggota demo (mode Google Spreadsheet) tidak sekadar keluar: datanya dihapus menyeluruh di server.
+  const demo = gasEnabled() && isDemo(m);
+  async function endDemo() {
+    setBusy(true);
+    setErr('');
+    const r = await deleteMember(m.id);
+    setBusy(false);
+    if (r && !r.ok) setErr(r.reason);
+  }
   return (
     <p className="memberbar">
       Masuk sebagai <strong>{m.nick}</strong> <span className="num">({m.id})</span>.{' '}
-      <button type="button" className="linkbtn" onClick={signOut}>
-        Keluar
-      </button>
+      {demo ? (
+        <>
+          Anggota demo bersifat sementara: suara dan tulisanmu dihapus saat selesai atau setelah {DEMO_TTL_MIN} menit.{' '}
+          <button type="button" className="linkbtn" disabled={busy} onClick={endDemo}>
+            {busy ? 'Menghapus...' : 'Selesai dan hapus data demo'}
+          </button>
+          {err && (
+            <>
+              {' '}
+              <span className="field__error" role="alert">
+                {err}
+              </span>
+            </>
+          )}
+        </>
+      ) : (
+        <button type="button" className="linkbtn" onClick={signOut}>
+          Keluar
+        </button>
+      )}
     </p>
   );
 }

@@ -67,12 +67,22 @@ Perilaku bila variabel terisi:
 
 Yang perlu diketahui:
 
-- **Suara tidak rahasia di Spreadsheet.** Tab Voting menyimpan MemberID di samping Pilihan, jadi siapa pun dengan akses edit
-  Spreadsheet bisa menelusuri pilihan tiap anggota. Sesuaikan teks "rahasia" dan "kotak suara dipisah" di situs bila memakai mode ini.
-- **Endpoint publik.** Siapa pun yang tahu alamat Web App bisa mengirim data. MemberID acak dibuat server dan berfungsi sebagai kunci anggota.
+- **Suara tidak sepenuhnya rahasia di Spreadsheet.** Tab Voting menyimpan MemberID acak (bukan nama) di samping Pilihan, jadi siapa
+  pun dengan akses edit Spreadsheet bisa melihat pilihan per ID. Teks di situs otomatis menyesuaikan ("tanpa nama", bukan "rahasia").
+  Batasi akses edit Spreadsheet.
+- **Anggota demo bersifat sementara.** "Beri suara sebagai anggota demo" dan "Coba sebagai anggota demo" membuat anggota dengan
+  kelompok `Anggota demo`. Tombol "Selesai dan hapus data demo" menghapus **semua** jejaknya di Spreadsheet (suara, dukungan,
+  aspirasi, komentar, dan baris anggotanya), dan server membersihkan sendiri yang lebih tua dari 30 menit (`DEMO_TTL_MIN` di
+  `Code.gs` dan `site.js`). Pembersihan dipicu permintaan, tanpa trigger. Karena itu demo berulang tidak menumpuk suara. Anggota
+  yang mendaftar lewat formulir tidak terpengaruh: suaranya tetap sebagai jejak tanpa nama setelah hak hapus.
+- **Endpoint dibatasi.** `Code.gs` hanya menerima topik voting `rembuk-12` dan opsinya (`CONFIG.VOTING_OPTIONS`). Bila menambah Rembuk
+  baru di `site.js`, tambahkan juga di `Code.gs`, lalu deploy versi baru. Endpoint tetap publik: siapa pun yang tahu alamatnya bisa
+  mengirim data, dan MemberID acak berfungsi sebagai kunci anggota.
 - **Laporan forum hanya berlaku di perangkat itu.** Apps Script tidak punya tab moderasi.
-- Tombol "Reset data" hanya mengosongkan data di perangkat itu, bukan Spreadsheet. "Hapus data saya" menghapus baris anggota di Spreadsheet
-  dan menganonimkan namanya pada aspirasi dan forum.
+- Di produksi tidak ada tombol "Reset data" (hanya muncul di `npm run dev`). "Hapus data saya" menghapus baris anggota di
+  Spreadsheet dan menganonimkan namanya pada aspirasi dan forum.
+- Setiap perubahan `Code.gs` baru berlaku setelah ditempel ke editor Apps Script dan di-deploy sebagai versi baru.
 
-Pengujian: `npm test` menjalankan 20 uji (aturan inti, integrasi dengan `Code.gs` memakai tiruan layanan Google, dan balapan antara
-polling dan konfirmasi aksi). Skrip Code.gs di lingkungan Google sungguhan belum diuji otomatis dan perlu dicoba sekali setelah deploy.
+Pengujian: `npm test` menjalankan 27 uji (aturan inti, integrasi dengan `Code.gs` memakai tiruan layanan Google termasuk anggota demo
+sementara dan kedaluwarsa, dan balapan antara polling dan konfirmasi aksi). Perilaku `Code.gs` di Google sungguhan perlu dicoba sekali
+setelah setiap deploy.

@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import crypto from 'node:crypto';
-import { setGasUrl, gasGet } from '../src/lib/gas.js';
+import { setGasUrl, gasGet, gasPost } from '../src/lib/gas.js';
 import * as S from '../src/lib/store.js';
 import { ballots } from '../src/data/site.js';
 
@@ -36,11 +36,13 @@ class Sheet {
     this.cells = next; this.maxR = Math.max(0, this.maxR - 1);
   }
 }
+const cacheUntil = new Map(); // tiruan CacheService: kunci -> waktu kedaluwarsa
 const book = { sheets: new Map(), getSheetByName(n) { return this.sheets.get(n) || null; }, insertSheet(n) { const s = new Sheet(); this.sheets.set(n, s); return s; } };
 const gas = vm.createContext({
   SpreadsheetApp: { getActiveSpreadsheet: () => book, flush() {} },
   PropertiesService: { getScriptProperties: () => ({ getProperty: () => null }) },
-  LockService: { getScriptLock: () => ({ waitLock() {}, hasLock: () => true, releaseLock() {} }) },
+  LockService: { getScriptLock: () => ({ waitLock() {}, tryLock: () => true, hasLock: () => true, releaseLock() {} }) },
+  CacheService: { getScriptCache: () => ({ get: (k) => (cacheUntil.get(k) > Date.now() ? '1' : null), put: (k, _v, sec) => cacheUntil.set(k, Date.now() + sec * 1000) }) },
   ContentService: { MimeType: { JSON: 'JSON' }, createTextOutput(s) { return { s, setMimeType() { return this; } }; } },
   Utilities: { getUuid: () => crypto.randomUUID(), formatDate: (d) => d.toISOString() },
   Logger: { log() {} },
@@ -275,6 +277,116 @@ test('hak hapus gagal: kartu tetap ada dan pesan kembali', async () => {
   assert.equal(state().members.some((m) => m.id === A.id), true);
 });
 
+const rowsOf = (sheet, id) => { const sh = book.getSheetByName(sheet); let n = 0; for (let r = 2; r <= sh.getLastRow(); r++) if (String(sh.cell(r, 2)).toUpperCase() === id) n++; return n; };
+const postsCount = () => S.forumView(state()).reduce((n, t) => n + t.posts.length, 0);
+
+test('server hanya menerima topik dan opsi voting yang dikenal', async () => {
+  const bad1 = await gasPost('submit_vote', { memberId: A.id, topic: 'topik-asing', choice: 'larang' });
+  assert.equal(bad1.ok, false);
+  assert.match(bad1.reason, /Topik voting tidak dikenal/);
+  const bad2 = await gasPost('submit_vote', { memberId: A.id, topic: open.id, choice: 'bukan-opsi' });
+  assert.equal(bad2.ok, false);
+  assert.match(bad2.reason, /Pilihan tidak valid/);
+});
+
+test('anggota demo: tertandai, lalu semua jejaknya dihapus menyeluruh saat selesai', async () => {
+  S.signIn(A.id);
+  await poll();
+  const base = { votes: S.tally(state(), open).total, members: S.memberTotal(state()), posts: postsCount(), asp: S.aspView(state()).length };
+  const other = S.aspView(state()).find((a) => !a.pending);
+  const supportBefore = S.supportCount(state(), other);
+
+  const d = await S.demoMember();
+  assert.equal(d.demo, true);
+  assert.equal(d.group, 'Anggota demo');
+  const anggota = book.getSheetByName('Anggota');
+  assert.equal(anggota.cell(anggota.getLastRow(), 4), 'Anggota demo', 'server menandai baris sebagai demo');
+
+  assert.equal((await S.castVote(open.id, d.id, 'bebas')).ok, true);
+  assert.equal((await S.supportAspiration(d.id, other.id)).ok, true);
+  const mine = await S.submitAspiration(d.id, { title: 'Aspirasi dari anggota demo', cat: 'Lainnya', text: 'Uraian aspirasi demo yang cukup panjang.' });
+  assert.equal(mine.ok, true);
+  assert.equal((await S.postThread(d.id, { title: 'Topik dari anggota demo', cat: 'Hak digital', text: 'Isi topik dari anggota demo ini.' })).ok, true);
+  await poll();
+  assert.equal(S.tally(state(), open).total, base.votes + 1, 'suara demo terhitung selama sesi');
+  assert.equal(S.supportCount(state(), S.aspView(state()).find((a) => a.id === other.id)), supportBefore + 1);
+  assert.equal(S.aspView(state()).length, base.asp + 1);
+  assert.equal(postsCount(), base.posts + 1);
+  assert.equal(S.isDemo(S.currentMember(state())), true);
+
+  const r = await S.deleteMember(d.id); // "Selesai dan hapus data demo"
+  assert.equal(r.ok, true);
+  await poll();
+  const dId = d.id.toUpperCase();
+  assert.equal(S.tally(state(), open).total, base.votes, 'suara demo hilang (tidak ada jejak)');
+  assert.equal(S.supportCount(state(), S.aspView(state()).find((a) => a.id === other.id)), supportBefore, 'dukungan demo dicabut');
+  assert.equal(S.aspView(state()).some((a) => a.id === mine.id), false, 'aspirasi demo hilang');
+  assert.equal(postsCount(), base.posts, 'komentar demo hilang');
+  assert.equal(S.memberTotal(state()), base.members, 'anggota demo tidak terhitung lagi');
+  for (const tab of ['Anggota', 'Voting', 'Aspirasi', 'Forum']) assert.equal(rowsOf(tab, dId), 0, `tab ${tab} bersih dari jejak demo`);
+  assert.equal(S.currentMember(state()), null);
+  assert.equal(state().roll[open.id]?.[d.id], undefined, 'catatan suara di perangkat ikut dibuang');
+  assert.ok(!JSON.stringify([...book.getSheetByName('Aspirasi').cells]).includes(dId), 'ID demo tidak tersisa di kolom Pendukung');
+});
+
+test('demo berulang tidak menumpuk suara: setiap demo hilang saat selesai', async () => {
+  await poll();
+  const before = S.tally(state(), open).total;
+  for (let i = 0; i < 3; i++) {
+    const d = await S.demoMember();
+    assert.equal((await S.castVote(open.id, d.id, 'larang')).ok, true);
+    assert.equal((await S.deleteMember(d.id)).ok, true);
+  }
+  await poll();
+  assert.equal(S.tally(state(), open).total, before, 'tiga putaran demo tidak mengubah hasil');
+});
+
+test('anggota terdaftar tidak bisa dihapus menyeluruh (suaranya tetap sebagai jejak anonim)', async () => {
+  const reg = (await S.joinMember({ nick: 'Terdaftar', group: 'Lainnya' })).member;
+  assert.equal(reg.demo, undefined);
+  await S.castVote(open.id, reg.id, 'bebas');
+  await poll();
+  const total = S.tally(state(), open).total;
+  assert.equal((await S.deleteMember(reg.id)).ok, true);
+  await poll();
+  assert.equal(S.tally(state(), open).total, total, 'suara anggota terdaftar tetap setelah hak hapus');
+  assert.equal(rowsOf('Anggota', reg.id.toUpperCase()), 0);
+  S.signIn(A.id);
+});
+
+test('kedaluwarsa di server: demo lama dibersihkan, anggota terdaftar tidak; klien mendapat pesan yang jelas', async () => {
+  const d = await S.demoMember();
+  await S.castVote(open.id, d.id, 'larang');
+  await poll();
+  const total = S.tally(state(), open).total;
+  vm.runInContext('CONFIG.DEMO_TTL_MIN = 0;', gas); // paksa semua demo dianggap kedaluwarsa
+  cacheUntil.clear();
+  await new Promise((r) => setTimeout(r, 5));
+  await poll(); // GET memicu pembersihan
+  vm.runInContext('CONFIG.DEMO_TTL_MIN = 30;', gas);
+  assert.equal(rowsOf('Anggota', d.id.toUpperCase()), 0, 'anggota demo dibersihkan server');
+  assert.equal(rowsOf('Voting', d.id.toUpperCase()), 0, 'suaranya ikut hilang');
+  assert.equal(rowsOf('Anggota', A.id.toUpperCase()), 1, 'anggota terdaftar tidak tersentuh');
+  assert.equal(S.tally(state(), open).total, total - 1);
+  // Kartu demo masih ada di perangkat sampai aksi berikutnya, yang gagal dengan pesan jelas.
+  const asp = S.aspView(state()).find((a) => !a.pending);
+  const res = await S.supportAspiration(d.id, asp.id);
+  assert.equal(res.ok, false);
+  assert.match(res.reason, /Sesi demo sudah berakhir/);
+  assert.equal(state().members.some((m) => m.id === d.id), false, 'kartu demo dibuang dari perangkat');
+  S.signIn(A.id);
+});
+
+test('kartu demo yang melewati batas waktu dibuang dari perangkat saat polling', async () => {
+  const d = await S.demoMember();
+  const real = Date.now;
+  Date.now = () => real() + 31 * 60000;
+  try { await poll(); } finally { Date.now = real; }
+  assert.equal(state().members.some((m) => m.id === d.id), false);
+  await S.deleteMember(d.id); // baris demo di server dihapus menyeluruh
+  S.signIn(A.id);
+});
+
 test('tanpa URL, store kembali ke mode lokal sinkron', async () => {
   setGasUrl('');
   S.resetAll();
@@ -284,4 +396,6 @@ test('tanpa URL, store kembali ke mode lokal sinkron', async () => {
   assert.equal(r.ok, true, 'hasil sinkron, bukan Promise');
   assert.ok(!(r instanceof Promise));
   assert.equal(S.tally(state(), open).total, 1);
+  const dm = S.demoMember();
+  assert.equal(dm.demo, true, 'di mode lokal demo hanya label, tanpa server');
 });

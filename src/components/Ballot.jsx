@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { ballots, QUORUM } from '../data/site.js';
+import { ballots, QUORUM, DEMO_TTL_MIN } from '../data/site.js';
+import { gasEnabled } from '../lib/gas.js';
 import { useSim, currentMember, tally, castVote, demoMember } from '../lib/store.js';
 import { emitState } from '../lib/signal.js';
 import { useRealtimeData } from '../hooks/useRealtimeData.js';
@@ -127,7 +128,10 @@ export default function Ballot({ ballotId, compact = false }) {
           </button>
           {!member && (
             <p className="ballot__hint">
-              Kamu otomatis masuk sebagai anggota demo, atau <a href="#membership">daftar anggota simulasi</a>.
+              {gasEnabled()
+                ? `Kamu otomatis masuk sebagai anggota demo sementara (dihapus setelah selesai atau ${DEMO_TTL_MIN} menit), atau `
+                : 'Kamu otomatis masuk sebagai anggota demo, atau '}
+              <a href="#membership">daftar anggota simulasi</a>.
             </p>
           )}
         </form>

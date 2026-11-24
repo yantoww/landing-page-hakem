@@ -1,5 +1,6 @@
 ---
 import Sign from './Sign.astro';
+import { gasEnabled } from '../lib/gas.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const problems = [
@@ -49,7 +50,9 @@ const compare = [
   [
     'Data anggota',
     'Dikelola sekretariat, aturan akses jarang dipublikasikan.',
-    'Data minimal, hak hapus, dan kotak suara dipisah dari identitas.',
+    gasEnabled()
+      ? 'Data minimal, hak hapus, dan catatan suara hanya memakai ID anggota acak, bukan nama.'
+      : 'Data minimal, hak hapus, dan kotak suara dipisah dari identitas.',
   ],
 ];
 

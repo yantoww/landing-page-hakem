@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { groups, issues } from '../data/site.js';
-import { useSim, currentMember, joinMember, signIn, signOut, deleteMember } from '../lib/store.js';
+import { groups, issues, DEMO_TTL_MIN } from '../data/site.js';
+import { useSim, currentMember, joinMember, signIn, signOut, deleteMember, isDemo } from '../lib/store.js';
 import { gasEnabled } from '../lib/gas.js';
 import { asset } from './ui.jsx';
 
@@ -197,8 +197,11 @@ function Pass({ m, others, focusOnMount }) {
   const [busy, setBusy] = useState(false);
   const [delErr, setDelErr] = useState('');
 
+  // Anggota demo (mode Google Spreadsheet) bersifat sementara: satu tombol menghapus semua jejaknya di server.
+  const demo = gasEnabled() && isDemo(m);
+
   async function remove() {
-    if (!sure) {
+    if (!sure && !demo) {
       setSure(true);
       return;
     }
@@ -234,7 +237,7 @@ function Pass({ m, others, focusOnMount }) {
           <img src={asset('logo.svg')} alt="" width="40" height="40" />
           <div>
             <p className="pass__brand">Partai Simpul</p>
-            <p className="pass__kind">Kartu anggota digital, simulasi</p>
+            <p className="pass__kind">{demo ? 'Kartu anggota demo, sementara' : 'Kartu anggota digital, simulasi'}</p>
           </div>
         </div>
         <p className="pass__name">{m.nick}</p>
@@ -258,9 +261,11 @@ function Pass({ m, others, focusOnMount }) {
         <h3 className="member__title">Kartu aktif. Hak suaramu berlaku.</h3>
         <p>
           Kelompok: {m.group}.{issueNames.length > 0 && ` Isu yang kamu pilih: ${issueNames.join(', ')}.`}{' '}
-          {gasEnabled()
-            ? 'Data ini tersimpan di Google Spreadsheet panitia dan bisa kamu hapus kapan saja.'
-            : 'Data ini tersimpan hanya di browser ini.'}
+          {demo
+            ? `Anggota demo bersifat sementara: suara dan tulisanmu dihapus saat kamu selesai atau setelah ${DEMO_TTL_MIN} menit.`
+            : gasEnabled()
+              ? 'Data ini tersimpan di Google Spreadsheet panitia dan bisa kamu hapus kapan saja.'
+              : 'Data ini tersimpan hanya di browser ini.'}
         </p>
         <div className="actions">
           <a className="btn btn--primary" href="#partisipasi-suara" onClick={toVoting}>
@@ -269,16 +274,24 @@ function Pass({ m, others, focusOnMount }) {
           <a className="btn btn--primary" href="#participation">
             Coba voting, forum, dan aspirasi
           </a>
-          <button type="button" className="btn btn--ghost" onClick={signOut}>
-            Keluar dan daftar anggota lain
-          </button>
+          {!demo && (
+            <button type="button" className="btn btn--ghost" onClick={signOut}>
+              Keluar dan daftar anggota lain
+            </button>
+          )}
           <button
             type="button"
             className={`btn btn--ghost${sure ? ' btn--warn' : ''}`}
             disabled={busy}
             onClick={remove}
           >
-            {busy ? 'Menghapus...' : sure ? 'Klik lagi untuk menghapus datamu' : 'Hapus data saya'}
+            {busy
+              ? 'Menghapus...'
+              : demo
+                ? 'Selesai dan hapus data demo'
+                : sure
+                  ? 'Klik lagi untuk menghapus datamu'
+                  : 'Hapus data saya'}
           </button>
         </div>
         {delErr && (
