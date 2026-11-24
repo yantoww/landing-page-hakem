@@ -50,8 +50,8 @@ export const social = [
   },
   {
     name: 'TikTok',
-    handle: '@isi-akun-tiktok',
-    href: '',
+    handle: '@partaisimpul',
+    href: 'https://www.tiktok.com/@partaisimpul',
     use: 'Video pendek pengenalan partai dan konten interaktif.',
   },
 ];

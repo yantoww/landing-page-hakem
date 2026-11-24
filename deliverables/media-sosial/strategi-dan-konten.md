@@ -16,13 +16,13 @@ Dokumen ini melengkapi ketentuan media sosial pada Panduan Project Politik Digit
 | Instagram | Akun utama, aktif | Aktif: enam konten di bawah | Karusel edukasi dan advokasi, postingan ajakan, story interaktif, tautan di bio ke website |
 | TikTok | Akun pendukung | Aktif minimal satu video | Video pendek pengenalan partai (naskah di bagian 6) untuk audiens yang lebih muda |
 
-**Nama akun yang disarankan** (cek ketersediaan sendiri, jangan dianggap pasti kosong): `partaisimpul`, `partaisimpul.sim`, `simpul.sim`. Pakai nama yang sama di kedua platform bila tersedia.
+**Akun Instagram yang dipakai:** `@partai.simpul` (https://www.instagram.com/partai.simpul). Akun sudah dibuat, tetapi belum ada postingan: keenam konten di bawah masih perlu diunggah. **Akun TikTok:** `@partaisimpul` (https://www.tiktok.com/@partaisimpul). Video pengenalan (bagian 6) perlu diunggah dari akun ini.
 
 **Bio Instagram** (di bawah 150 karakter):
 > Partai digital fiktif untuk simulasi akademik, bukan partai resmi. Coba voting, forum, dan aspirasi lewat tautan di bawah.
 
 **Foto profil:** `public/logo.svg` (ekspor PNG 1080 x 1080 dengan latar nila `#141B4D`).
-**Tautan di bio:** alamat website setelah dipublikasikan (belum ada, isi sendiri).
+**Tautan di bio:** https://politik-digital-web.vercel.app (alamat cadangan yang sama isinya: https://landing-page-hakem.vercel.app).
 
 Setiap gambar sudah memuat label "Simulasi Akademik — Bukan Partai Politik Resmi" di pita kuning bawah. Jangan dipotong saat diunggah.
 
@@ -148,7 +148,7 @@ Temu  ->  Coba  ->  Daftar  ->  Terlibat
 | Daftar | Mengisi formulir dan mendapat kartu anggota simulasi | "Daftar dengan nama panggilan" | Jumlah kartu yang terbit (hitung manual saat pameran) |
 | Terlibat | Memberi suara, mendukung aspirasi, membalas di forum | Rembuk #12, pertanyaan di akhir karusel | Aspirasi dan balasan forum yang masuk (hitung manual) |
 
-**Batasan pengukuran yang perlu dicatat jujur di laporan:** website sengaja tidak memakai analitik atau pelacak, dan data tersimpan di browser masing-masing. Jadi konversi ke website hanya bisa diperkirakan dari klik tautan bio dan hitungan manual saat pameran. Jangan menulis angka yang tidak bisa dibuktikan.
+**Batasan pengukuran yang perlu dicatat jujur di laporan:** website sengaja tidak memakai analitik atau pelacak. Data partisipasi (anggota, suara, aspirasi, forum) tersimpan di Google Spreadsheet kelompok, tetapi anggota demo sengaja dihapus saat selesai atau setelah 30 menit, sehingga jumlahnya bukan ukuran konversi. Konversi ke website hanya bisa diperkirakan dari klik tautan bio dan jumlah anggota yang mendaftar lewat formulir. Jangan menulis angka yang tidak bisa dibuktikan.
 
 **Tidak dilakukan:** membeli pengikut, memakai bot, menukar suara dengan hadiah, atau mengatur hasil voting.
 
