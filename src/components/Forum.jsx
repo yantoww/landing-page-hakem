@@ -139,6 +139,7 @@ export default function Forum() {
         <ul className="rules-list" aria-label="Tata krama forum">
           <li>Bahas gagasan, bukan menyerang orang.</li>
           <li>Tanpa ujaran kebencian, doxing, atau tuduhan tanpa sumber.</li>
+          <li>Tulisan berisi kata kasar ditolak sebelum terkirim, juga pada nama panggilan dan aspirasi.</li>
           <li>Satu orang satu akun. Jangan menyamar sebagai anggota lain.</li>
           <li>Laporan menyembunyikan unggahan sementara sampai moderator memutuskan.</li>
         </ul>

@@ -154,7 +154,7 @@ function setup() {
 // ---------- Aksi ----------
 
 function registerMember_(b) {
-  var nickname = text_(b.nickname, 'Nama panggilan', 2, 30);
+  var nickname = publicText_(b.nickname, 'Nama panggilan', 2, 30);
   var group = text_(b.group, 'Kategori kelompok', 1, 80);
   var issues = list_(b.issues, 'Minat isu');
   var id = 'M-' + Utilities.getUuid().replace(/-/g, '').slice(0, 10).toUpperCase();
@@ -185,9 +185,9 @@ function submitVote_(b) {
 
 function submitAspiration_(b) {
   var member = requireMember_(b.memberId, 'mengajukan aspirasi');
-  var category = text_(b.category || 'Lainnya', 'Kategori', 1, 60);
-  var title = text_(b.title, 'Judul aspirasi', 8, 90);
-  var content = text_(b.text, 'Isi aspirasi', 20, 400);
+  var category = publicText_(b.category || 'Lainnya', 'Kategori', 1, 60);
+  var title = publicText_(b.title, 'Judul aspirasi', 8, 90);
+  var content = publicText_(b.text, 'Isi aspirasi', 20, 400);
   var id = 'A-' + Utilities.getUuid().replace(/-/g, '').slice(0, 8).toUpperCase();
   var name = b.anonymous === true ? 'Anonim' : member.nickname;
   // Pengaju otomatis menjadi pendukung pertama.
@@ -216,9 +216,9 @@ function supportAspiration_(b) {
 
 function submitComment_(b) {
   var member = requireMember_(b.memberId, 'menulis di forum');
-  var topic = text_(b.topic, 'Topik', 3, 120);
-  var comment = text_(b.comment, 'Komentar', 10, 600);
-  var category = text_(b.category || 'Lainnya', 'Kategori', 1, 60);
+  var topic = publicText_(b.topic, 'Topik', 3, 120);
+  var comment = publicText_(b.comment, 'Komentar', 10, 600);
+  var category = publicText_(b.category || 'Lainnya', 'Kategori', 1, 60);
   var name = b.anonymous === true ? 'Anonim' : member.nickname;
   appendRow_(sheet_(SHEETS.FORUM), [new Date(), member.id, name, topic, comment, category]);
   return { message: 'Komentar terkirim.', data: { topic: topic } };
@@ -431,6 +431,62 @@ function text_(value, label, min, max) {
   if (!s) throw new UserError(label + ' wajib diisi.');
   if (s.length < min) throw new UserError(label + ' terlalu pendek. Tulis minimal ' + min + ' karakter.');
   if (s.length > max) throw new UserError(label + ' terlalu panjang. Batasnya ' + max + ' karakter.');
+  return s;
+}
+
+// Teks yang tampil ke publik: selain panjangnya, ditolak bila memuat kata kasar. Cek ini di server karena
+// URL Web App publik, jadi penyaring di situs saja bisa dilewati. Daftar dan aturan disalin dari
+// src/lib/moderation.js; bila mengubah salah satu, ubah keduanya.
+var BAD_WORDS = [
+  // Indonesia dan daerah
+  'anjing', 'anjg', 'anj', 'anjir', 'anjrit', 'ajg', 'asu', 'babi', 'monyet', 'bajingan', 'bangsat', 'bgst', 'bacot',
+  'bego', 'goblok', 'goblog', 'gblk', 'tolol', 'idiot', 'dungu', 'brengsek', 'keparat', 'kampret', 'sialan', 'bedebah',
+  'tai', 'taik', 'kontol', 'kntl', 'memek', 'pepek', 'jembut', 'peler', 'ngentot', 'ngentod', 'entot', 'ngewe',
+  'perek', 'lonte', 'pelacur', 'jancok', 'jancuk', 'dancok', 'diancok', 'jncok', 'ndasmu',
+  // Ejekan kubu politik
+  'cebong', 'kadrun',
+  // Inggris
+  'fuck', 'fucking', 'fucker', 'motherfucker', 'shit', 'bullshit', 'bitch', 'asshole', 'bastard', 'dick', 'pussy',
+  'slut', 'whore', 'nigger', 'nigga', 'faggot', 'retard',
+];
+var BAD_PATTERNS = BAD_WORDS.map(function (w) {
+  return new RegExp('^' + w.split('').map(function (c) { return c + '+'; }).join('') + '(?:nya|lah|kah|mu|ku|lu|lo)?$');
+});
+var LOOKALIKE = { 0: 'o', 1: 'i', 3: 'e', 4: 'a', 5: 's', 7: 't', 8: 'b', 9: 'g', '@': 'a', $: 's' };
+
+function isBad_(token) {
+  if (!/[a-z]/.test(token)) return false;
+  var word = token.replace(/2+$/, '').replace(/[0134789@$5]/g, function (c) { return LOOKALIKE[c]; });
+  return BAD_PATTERNS.some(function (re) { return re.test(word); });
+}
+
+// Kata kasar pertama yang ditemukan, atau '' bila bersih.
+function findBadWord_(text) {
+  var tokens = String(text)
+    .normalize('NFKD')
+    .replace(/[̀-ͯ­​-‏⁠﻿]/g, '')
+    .toLowerCase()
+    .split(/[^a-z0-9@$]+/)
+    .filter(Boolean)
+    .concat(['']);
+  var spelled = ''; // huruf yang dipisah-pisah: "k o n t o l"
+  for (var i = 0; i < tokens.length; i++) {
+    var t = tokens[i];
+    if (t.length === 1) {
+      spelled += t;
+      continue;
+    }
+    if (spelled.length >= 3 && isBad_(spelled)) return spelled;
+    spelled = '';
+    if (t && isBad_(t)) return t;
+  }
+  return '';
+}
+
+function publicText_(value, label, min, max) {
+  var s = text_(value, label, min, max);
+  var bad = findBadWord_(s);
+  if (bad) throw new UserError(label + ' memuat kata kasar atau menghina ("' + bad + '"). Ubah dulu sebelum dikirim.');
   return s;
 }
 

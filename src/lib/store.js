@@ -20,6 +20,7 @@ import {
 } from '../data/site.js';
 import { emitSignal } from './signal.js';
 import { gasEnabled, gasPost } from './gas.js';
+import { badWordError } from './moderation.js';
 
 const hasWindow = typeof window !== 'undefined';
 const clone = (x) => JSON.parse(JSON.stringify(x));
@@ -333,6 +334,11 @@ const issueName = (id) => issueList.find((i) => i.id === id)?.short || id;
 
 // Mode lokal: sinkron. Mode GAS: Promise yang selesai setelah server memberi MemberID.
 export function joinMember({ nick, group, issues = [], role = 'Anggota', demo = false }) {
+  const rude = badWordError(['Nama panggilan', nick]);
+  if (rude) {
+    const rejected = { ok: false, reason: rude };
+    return gasEnabled() ? Promise.resolve(rejected) : rejected;
+  }
   if (!gasEnabled()) return { ok: true, member: register({ nick, group, issues, role, demo }) };
   return gasPost('register_member', { nickname: nick.trim(), group, issues: issues.map(issueName) }).then((r) => {
     if (!r.ok) return { ok: false, reason: r.reason };
@@ -477,7 +483,7 @@ function sendComment(m, { topic, cat, text }) {
 export function postThread(memberId, { title, cat, text }) {
   const m = state.members.find((x) => x.id === memberId);
   if (!m) return { ok: false, reason: 'Hanya anggota yang bisa membuka topik.' };
-  const reason = lenErr(title, 8, 90, 'Judul') || lenErr(text, 10, 600, 'Isi topik');
+  const reason = lenErr(title, 8, 90, 'Judul') || lenErr(text, 10, 600, 'Isi topik') || badWordError(['Judul', title], ['Isi topik', text]);
   if (reason) return { ok: false, reason };
   if (gasEnabled()) return sendComment(m, { topic: title.trim(), cat, text: text.trim() });
   const thread = {
@@ -494,7 +500,7 @@ export function postThread(memberId, { title, cat, text }) {
 export function postReply(memberId, threadId, text) {
   const m = state.members.find((x) => x.id === memberId);
   if (!m) return { ok: false, reason: 'Hanya anggota yang bisa membalas.' };
-  const reason = lenErr(text, 10, 600, 'Balasan');
+  const reason = lenErr(text, 10, 600, 'Balasan') || badWordError(['Balasan', text]);
   if (reason) return { ok: false, reason };
   if (gasEnabled()) {
     const t = forumView(state).find((x) => x.id === threadId);
@@ -548,7 +554,7 @@ export function aspStatus(s, a) {
 export function submitAspiration(memberId, { title, cat, text }) {
   const m = state.members.find((x) => x.id === memberId);
   if (!m) return { ok: false, reason: 'Hanya anggota yang bisa mengajukan aspirasi.' };
-  const reason = lenErr(title, 8, 90, 'Judul') || lenErr(text, 20, 400, 'Uraian');
+  const reason = lenErr(title, 8, 90, 'Judul') || lenErr(text, 20, 400, 'Uraian') || badWordError(['Judul', title], ['Uraian', text]);
   if (reason) return { ok: false, reason };
 
   if (!gasEnabled()) {

@@ -8,6 +8,7 @@ import crypto from 'node:crypto';
 import { setGasUrl, gasGet, gasPost } from '../src/lib/gas.js';
 import * as S from '../src/lib/store.js';
 import { ballots } from '../src/data/site.js';
+import { BAD_WORDS, findBadWord } from '../src/lib/moderation.js';
 
 // ---- tiruan Apps Script ----
 class Sheet {
@@ -287,6 +288,26 @@ test('server hanya menerima topik dan opsi voting yang dikenal', async () => {
   const bad2 = await gasPost('submit_vote', { memberId: A.id, topic: open.id, choice: 'bukan-opsi' });
   assert.equal(bad2.ok, false);
   assert.match(bad2.reason, /Pilihan tidak valid/);
+});
+
+test('server menolak kata kasar walau penyaring di situs dilewati, dan aturannya sama dengan situs', async () => {
+  const sizes = () => ['Anggota', 'Aspirasi', 'Forum'].map((n) => book.getSheetByName(n)?.getLastRow() ?? 0).join();
+  const before = sizes();
+  for (const [action, body] of [
+    ['register_member', { nickname: 'si goblok', group: 'Lainnya' }],
+    ['submit_aspiration', { memberId: A.id, title: 'Judul usulan biasa', text: 'Isinya memaki: dasar bangsat semuanya.' }],
+    ['submit_comment', { memberId: A.id, topic: 'Topik biasa saja', comment: 'kalian semua 4njing banget' }],
+    ['submit_comment', { memberId: A.id, topic: 'Topik biasa saja', comment: 'Komentar yang sopan sekali.', category: 'k o n t o l' }],
+  ]) {
+    const r = await gasPost(action, body);
+    assert.equal(r.ok, false, action);
+    assert.match(r.reason, /kata kasar/);
+  }
+  assert.equal(sizes(), before, 'tidak ada baris yang tertulis');
+  assert.equal(JSON.stringify(gas.BAD_WORDS), JSON.stringify(BAD_WORDS), 'daftar kata di Code.gs dan moderation.js harus sama');
+  for (const t of ['anjiiing', 'goblok2', 'k o n t o l', 'asuransi santai', 'Tolong perbaiki layanan', 'b@bi', 'Niger']) {
+    assert.equal(gas.findBadWord_(t), findBadWord(t), t);
+  }
 });
 
 test('anggota demo: tertandai, lalu semua jejaknya dihapus menyeluruh saat selesai', async () => {
