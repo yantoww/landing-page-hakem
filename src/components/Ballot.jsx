@@ -60,7 +60,7 @@ export default function Ballot({ ballotId, compact = false }) {
     e.preventDefault();
     if (busy) return;
     if (!choice) {
-      setError('Pilih satu opsi dulu, lalu tekan tombol suara.');
+      setError('Pilih satu opsi terlebih dahulu, lalu tekan tombol suara.');
       return;
     }
     setBusy(true);
@@ -129,8 +129,8 @@ export default function Ballot({ ballotId, compact = false }) {
           {!member && (
             <p className="ballot__hint">
               {gasEnabled()
-                ? `Kamu otomatis masuk sebagai anggota demo sementara (dihapus setelah selesai atau ${DEMO_TTL_MIN} menit), atau `
-                : 'Kamu otomatis masuk sebagai anggota demo, atau '}
+                ? `Anda otomatis masuk sebagai anggota demo sementara (dihapus setelah selesai atau ${DEMO_TTL_MIN} menit), atau `
+                : 'Anda otomatis masuk sebagai anggota demo, atau '}
               <a href="#membership">daftar anggota simulasi</a>.
             </p>
           )}
@@ -139,7 +139,7 @@ export default function Ballot({ ballotId, compact = false }) {
         <div className="ballot__result" ref={result} tabIndex={-1} aria-live="polite">
           {receipt && (
             <p className="ballot__ok">
-              <strong>Suaramu tercatat.</strong> Kode bukti suara: <span className="num code">{receipt}</span>
+              <strong>Suara Anda tercatat.</strong> Kode bukti suara: <span className="num code">{receipt}</span>
             </p>
           )}
           <p className="ballot__q ballot__q--static">{ballot.question}</p>

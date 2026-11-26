@@ -1,76 +1,86 @@
 ---
 import Sign from './Sign.astro';
 import Register from './Register.jsx';
-import { council, bodies } from '../data/site.js';
+import { executives, divisions, bodies } from '../data/site.js';
 import { gasEnabled } from '../lib/gas.js';
 
 const tiers = [
-  ['Simpatisan', 'Siapa saja. Membaca forum, hasil Rembuk yang sudah ditutup, dan status aspirasi.'],
-  ['Anggota', 'Mendaftar lewat formulir. Memilih di Rembuk, mengajukan dan mendukung aspirasi, menulis di forum.'],
-  ['Penggerak', 'Anggota yang mengambil tugas: moderator forum, pendamping Simpul Wilayah, atau verifikator Cek Fakta Warga.'],
-  ['Pengurus', 'Anggota aktif sedikitnya 30 hari yang terpilih di Dewan Rembuk atau Komite Integritas.'],
+  ['Simpatisan', 'Siapa saja. Dapat membaca forum, hasil Rembuk yang sudah ditutup, dan status aspirasi.'],
+  ['Anggota', 'Mendaftar melalui formulir. Dapat memilih dalam Rembuk, mengajukan dan mendukung aspirasi, serta menulis di forum.'],
+  ['Relawan penggerak', 'Anggota yang menjalankan tugas, misalnya sebagai moderator forum, pendamping di wilayah, atau pemeriksa fakta.'],
+  ['Pengurus', 'Anggota aktif paling sedikit 30 hari yang terpilih dalam Dewan Pimpinan Pusat, pimpinan wilayah, atau Komite Integritas.'],
 ];
 
 const rights = [
-  'Memilih di setiap Rembuk, serta memilih dan dipilih untuk kursi Dewan.',
-  'Mengajukan dan mendukung aspirasi, lalu mendapat jawaban tertulis.',
-  'Membaca anggaran, laporan kepatuhan, dan hasil audit.',
+  'Memilih dalam setiap Rembuk serta memilih dan dipilih sebagai pengurus.',
+  'Mengajukan dan mendukung aspirasi serta memperoleh jawaban tertulis.',
+  'Membaca laporan anggaran, laporan kepatuhan, dan hasil audit.',
   'Mengajukan penarikan mandat bersama 10% anggota.',
-  'Menghapus data diri kapan saja.',
+  'Menghapus data pribadi kapan saja.',
 ];
 
 const duties = [
-  'Menaati tata krama forum dan kode etik.',
+  'Menaati tata tertib forum dan kode etik.',
   'Memakai satu akun saja.',
   'Menjaga kerahasiaan data anggota lain.',
-  'Ikut sedikitnya satu Rembuk per bulan agar tetap dihitung sebagai anggota aktif.',
+  'Mengikuti paling sedikit satu Rembuk setiap bulan agar tetap tercatat sebagai anggota aktif.',
 ];
 
 const election = [
-  ['Pencalonan terbuka', 'Anggota aktif sedikitnya 30 hari, didukung 5 anggota.'],
-  ['Masa debat', '14 hari di forum, ditutup sesi tanya jawab.'],
-  ['Pemungutan suara', '3 hari, rahasia, dengan pilihan berperingkat.'],
-  ['Penghitungan terbuka', 'Rekap dipublikasikan dan diaudit Komite Integritas.'],
-  ['Pelantikan dan piagam peran', 'Setiap kursi punya wilayah keputusan tertulis yang tidak tumpang tindih.'],
-  ['Evaluasi dan penarikan mandat', 'Evaluasi tiap 3 bulan. Mandat ditarik bila 10% anggota meminta dan dua pertiga suara setuju.'],
+  ['Pencalonan terbuka', 'Calon adalah anggota aktif paling sedikit 30 hari dan didukung oleh lima anggota.'],
+  ['Masa debat', 'Berlangsung selama 14 hari di forum dan ditutup dengan tanya jawab.'],
+  ['Pemungutan suara', 'Berlangsung selama 3 hari secara rahasia dengan pilihan berperingkat.'],
+  ['Penghitungan terbuka', 'Hasil dipublikasikan dan diaudit oleh Komite Integritas.'],
+  ['Pelantikan', 'Setiap pengurus menerima uraian tugas tertulis yang tidak tumpang tindih.'],
+  ['Evaluasi dan penarikan mandat', 'Evaluasi dilakukan setiap tiga bulan. Mandat ditarik apabila diminta 10% anggota dan disetujui dua pertiga suara.'],
 ];
 
 const signup = [
-  ['Isi formulir singkat', 'Nama panggilan, kelompok, dan minat isu. Tanpa NIK atau alamat.'],
-  ['Setujui kode etik dan data', 'Persetujuan eksplisit yang bisa dicabut kapan saja.'],
-  ['Verifikasi (sistem nyata)', 'Email kampus atau pendamping Simpul Wilayah, lalu masa tunggu 7 hari sebelum hak suara aktif agar tidak ada pendaftaran massal. Dilewati di simulasi ini.'],
-  ['Kartu anggota aktif', 'Kartu digital berisi nomor anggota dan jalur yang bisa dipakai.'],
+  ['Mengisi formulir', 'Nama panggilan, kelompok, dan minat isu. NIK dan alamat tidak diminta.'],
+  ['Menyetujui kode etik dan penggunaan data', 'Persetujuan diberikan secara tegas dan dapat dicabut kapan saja.'],
+  [
+    'Verifikasi (pada sistem nyata)',
+    'Melalui surel kampus atau pendamping wilayah, lalu menunggu 7 hari sebelum memiliki hak suara untuk mencegah pendaftaran massal. Tahap ini dilewati dalam simulasi.',
+  ],
+  ['Menerima kartu anggota', 'Kartu digital memuat nomor anggota dan fitur yang dapat digunakan.'],
+];
+
+const officerGroups = [
+  { label: 'Pengurus harian', cls: 'officers officers--core', list: executives },
+  { label: 'Ketua bidang', cls: 'officers', list: divisions },
 ];
 ---
 
 <section class="sec sec--white" id="leadership" aria-labelledby="lead-title">
   <div class="wrap wrap--rail">
-    <Sign num="03" id="lead-title" title="Leadership & Membership" sub="Struktur organisasi, model kepemimpinan, keanggotaan, dan formulir pendaftaran simulasi." />
+    <Sign num="03" id="lead-title" title="Leadership & Membership" sub="Susunan pengurus, model kepemimpinan, keanggotaan, dan formulir pendaftaran simulasi." />
 
     <div class="lead__model">
       <div>
-        <h3>Kepemimpinan kolektif bergilir</h3>
+        <h3>Kepemimpinan kolektif kolegial</h3>
         <p>
-          Lima kursi Dewan Rembuk dipilih anggota lewat e-voting untuk satu tahun, maksimal dua periode berturut-turut. Juru bicara
-          berganti tiap tiga bulan, jadi tidak ada satu wajah yang menjadi pusat partai. Keputusan strategis tidak diambil Dewan.
-          Keputusan itu diambil anggota di Rembuk.
+          Partai Simpul dipimpin Dewan Pimpinan Pusat yang terdiri atas Ketua Umum, Wakil Ketua Umum, Sekretaris Jenderal,
+          Bendahara Umum, dan empat ketua bidang. Mereka dipilih anggota melalui pemungutan suara elektronik untuk masa
+          jabatan satu tahun, paling lama dua periode berturut-turut. Keputusan pimpinan diambil bersama dan Ketua Umum tidak
+          memiliki hak veto. Juru bicara partai bergilir setiap tiga bulan. Keputusan strategis tetap berada di tangan anggota
+          melalui Rembuk.
         </p>
       </div>
       <div class="duo">
         <div>
-          <h4>Konsekuensi demokratis yang dicari</h4>
+          <h4>Konsekuensi demokratis yang diharapkan</h4>
           <ul class="plain">
-            <li>Menahan hyperleadership: kekuasaan tidak menumpuk pada satu figur.</li>
-            <li>Tanggung jawab jelas per kursi lewat piagam peran tertulis.</li>
-            <li>Anggota punya jalan keluar: mandat ditarik bila 10% anggota meminta dan dua pertiga suara setuju.</li>
+            <li>Kekuasaan tidak menumpuk pada satu tokoh.</li>
+            <li>Setiap jabatan memiliki uraian tugas tertulis.</li>
+            <li>Mandat pengurus dapat ditarik apabila diminta 10% anggota dan disetujui dua pertiga suara.</li>
           </ul>
         </div>
         <div>
-          <h4>Harga yang dibayar dan penangkalnya</h4>
+          <h4>Kelemahan dan cara mengatasinya</h4>
           <ul class="plain">
-            <li>Keputusan bisa lebih lambat. Penangkal: batas 7 hari untuk usulan yang mencapai ambang, dan jalur cepat untuk keadaan mendesak.</li>
-            <li>Tanggung jawab bisa kabur di antara lima orang. Penangkal: tiap kursi memegang satu wilayah keputusan.</li>
-            <li>Kolektif belum tentu demokratis. Penangkal: Komite Integritas mengaudit prosesnya, bukan hanya hasilnya.</li>
+            <li>Keputusan dapat berjalan lebih lambat. Karena itu, usulan yang mencapai ambang diberi batas 7 hari dan tersedia jalur cepat untuk keadaan mendesak.</li>
+            <li>Tanggung jawab dapat menjadi kabur. Karena itu, setiap pengurus memegang satu bidang keputusan.</li>
+            <li>Kepemimpinan kolektif belum tentu demokratis. Karena itu, Komite Integritas mengaudit proses pengambilan keputusan, tidak hanya hasilnya.</li>
           </ul>
         </div>
       </div>
@@ -82,30 +92,41 @@ const signup = [
         <li>
           <div class="node node--root">
             <strong>Majelis Anggota</strong>
-            <span>Seluruh anggota aktif. Kedaulatan tertinggi: memutuskan di Rembuk, memilih pengurus, dan menarik mandat.</span>
+            <span>Seluruh anggota aktif sebagai pemegang kedaulatan tertinggi. Memutuskan dalam Rembuk, memilih pengurus, dan menarik mandat.</span>
           </div>
           <ul>
             <li>
-              <div class="node">
-                <strong>Dewan Rembuk</strong>
-                <span>Lima kursi kolektif yang menjalankan keputusan Rembuk.</span>
-              </div>
-              <ul class="seats">
+              <div class="node node--dpp">
+                <strong>Dewan Pimpinan Pusat</strong>
+                <span>Pimpinan kolektif kolegial yang menjalankan keputusan Rembuk. Seluruh jabatan di bawah ini adalah anggotanya.</span>
                 {
-                  council.map((c) => (
-                    <li>
-                      <div class="node">
-                        <p class="seat__head">
-                          <strong>{c.seat}</strong>
-                          {c.name && <span class="seat__name">{c.name}</span>}
-                        </p>
-                        <p>{c.duty}</p>
-                        <p class="seat__role">Peran proyek: {c.role}</p>
-                      </div>
-                    </li>
+                  officerGroups.map((g) => (
+                    <div class="officers__group">
+                      <p class="officers__label">{g.label}</p>
+                      <ul class={g.cls}>
+                        {g.list.map((c) => (
+                          <li>
+                            <div class="node">
+                              <p class="seat__head">
+                                <strong>{c.seat}</strong>
+                                {c.name && <span class="seat__name">{c.name}</span>}
+                              </p>
+                              <p>{c.duty}</p>
+                              {c.role && <p class="seat__role">Peran proyek: {c.role}</p>}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))
                 }
-              </ul>
+              </div>
+            </li>
+            <li>
+              <div class="node">
+                <strong>Dewan Pimpinan Wilayah</strong>
+                <span>Pengurus Simpul Wilayah bersama relawan. Menyediakan titik akses dan pendamping bagi anggota yang kesulitan memakai platform.</span>
+              </div>
             </li>
             {
               bodies.map((b) => (
@@ -121,18 +142,6 @@ const signup = [
                 </li>
               ))
             }
-            <li>
-              <div class="node">
-                <strong>Moderator Forum</strong>
-                <span>Relawan bergilir yang meninjau laporan dalam 24 jam dan mencatat keputusannya di log moderasi.</span>
-              </div>
-            </li>
-            <li>
-              <div class="node">
-                <strong>Simpul Wilayah</strong>
-                <span>Relawan lokal. Menyediakan titik akses dan pendamping bagi anggota yang sulit memakai platform.</span>
-              </div>
-            </li>
           </ul>
         </li>
       </ul>
@@ -140,7 +149,7 @@ const signup = [
 
     <div class="lead__pair">
       <div>
-        <h3>Jalur keanggotaan</h3>
+        <h3>Jenjang keanggotaan</h3>
         <ol class="route route--v">
           {
             tiers.map((t) => (
@@ -170,7 +179,7 @@ const signup = [
 
     <div class="lead__pair">
       <div>
-        <h3>Prosedur pemilihan pemimpin</h3>
+        <h3>Tata cara pemilihan pengurus</h3>
         <ol class="route route--v">
           {
             election.map((e) => (
@@ -201,14 +210,14 @@ const signup = [
       <div class="member-zone__intro">
         <h3>Daftar sebagai anggota simulasi</h3>
         <p>
-          Isi formulir singkat, lalu kartu anggota digital terbit saat itu juga. Dengan kartu ini kamu bisa memilih, mendukung
+          Isi formulir singkat, lalu kartu anggota digital langsung terbit. Dengan kartu ini Anda dapat memilih, mendukung
           aspirasi, dan menulis di forum pada bagian Digital Participation.
         </p>
         <p>
           {
             gasEnabled()
-              ? 'Formulir ini hanya simulasi. Tidak ada email, NIK, atau alamat yang diminta. Nama panggilan, kelompok, dan isu yang kamu pilih disimpan di Google Spreadsheet panitia, dan bisa kamu hapus kapan saja lewat tombol Hapus data saya.'
-              : 'Formulir ini hanya simulasi. Tidak ada email, NIK, atau alamat yang diminta, dan datamu tidak meninggalkan browser ini.'
+              ? 'Formulir ini hanya simulasi dan tidak meminta surel, NIK, atau alamat. Nama panggilan, kelompok, dan isu yang Anda pilih disimpan di Google Spreadsheet panitia dan dapat Anda hapus kapan saja melalui tombol Hapus data saya.'
+              : 'Formulir ini hanya simulasi dan tidak meminta surel, NIK, atau alamat. Data Anda tidak keluar dari peramban ini.'
           }
         </p>
       </div>

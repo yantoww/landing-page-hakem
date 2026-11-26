@@ -16,7 +16,7 @@ import { Gate } from './ui.jsx';
 
 const STAGE = {
   filed: 'Diajukan',
-  review: 'Dikaji Kursi Kebijakan',
+  review: 'Dikaji Bidang Kebijakan',
   agenda: 'Wajib masuk agenda Rembuk',
   decided: 'Diputuskan',
 };
@@ -155,8 +155,8 @@ export default function Aspirations() {
   return (
     <div className="asp">
       <p>
-        Setiap usulan melewati stasiun yang sama. Pada {ASP_REVIEW} dukungan, Kursi Kebijakan wajib menjawab tertulis dalam 7
-        hari. Pada {ASP_AGENDA} dukungan, usulan wajib masuk agenda Rembuk Pekanan berikutnya.
+        Setiap usulan melalui tahapan yang sama. Usulan dengan {ASP_REVIEW} dukungan wajib dijawab Bidang Kebijakan secara
+        tertulis dalam 7 hari. Usulan dengan {ASP_AGENDA} dukungan wajib masuk agenda Rembuk Pekanan berikutnya.
       </p>
 
       {!member ? (
@@ -164,8 +164,8 @@ export default function Aspirations() {
           what="mengajukan aspirasi"
           extra={
             gasEnabled()
-              ? `Menekan Dukung pada usulan di bawah otomatis memasukkanmu sebagai anggota demo sementara (dihapus setelah selesai atau ${DEMO_TTL_MIN} menit).`
-              : 'Menekan Dukung pada usulan di bawah otomatis memasukkanmu sebagai anggota demo.'
+              ? `Jika Anda menekan Dukung pada usulan di bawah, Anda otomatis masuk sebagai anggota demo sementara (dihapus setelah selesai atau ${DEMO_TTL_MIN} menit).`
+              : 'Jika Anda menekan Dukung pada usulan di bawah, Anda otomatis masuk sebagai anggota demo.'
           }
         />
       ) : (
@@ -174,12 +174,12 @@ export default function Aspirations() {
 
       {sent && (
         <p className="notice" role="status">
-          Aspirasi terkirim. Statusnya Diajukan dan sudah memuat satu dukunganmu, tampil di urutan Terbaru.
+          Aspirasi terkirim dengan status Diajukan dan sudah memuat dukungan Anda. Usulan tampil pada urutan Terbaru.
         </p>
       )}
       {auto && (
         <p className="notice" role="status">
-          Dukunganmu tercatat. Kamu otomatis masuk sebagai anggota demo: {auto}.
+          Dukungan Anda tercatat. Anda otomatis masuk sebagai anggota demo, yaitu {auto}.
         </p>
       )}
 
@@ -237,7 +237,7 @@ export default function Aspirations() {
                       disabled={Boolean(sending)}
                       onClick={() => !mine && support(a.id)}
                     >
-                      {mine ? 'Sudah kamu dukung' : sending === a.id ? 'Mengirim dukungan...' : 'Dukung usulan ini'}
+                      {mine ? 'Sudah Anda dukung' : sending === a.id ? 'Mengirim dukungan...' : 'Dukung usulan ini'}
                     </button>
                   )}
                 </div>

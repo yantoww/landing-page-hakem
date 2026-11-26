@@ -8,11 +8,11 @@ const terms = [
   [
     'Data',
     gasEnabled()
-      ? 'Nama panggilan, kelompok, dan isu yang dipilih disimpan di Google Spreadsheet panitia agar hasilnya tampil di semua perangkat. Tidak ada email, NIK, atau alamat. Anggota bisa menghapus datanya kapan saja. Tidak ada pelacak atau analitik.'
-      : 'Hanya nama panggilan, tersimpan di browser dan tidak dikirim ke server. Tidak ada pelacak atau analitik.',
+      ? 'Nama panggilan, kelompok, dan isu yang dipilih disimpan di Google Spreadsheet panitia agar hasilnya tampil di semua perangkat. Surel, NIK, dan alamat tidak dikumpulkan. Anggota dapat menghapus datanya kapan saja. Situs ini tidak memakai pelacak atau analitik. Peta lokasi dimuat dari OpenStreetMap.'
+      : 'Hanya nama panggilan yang disimpan di peramban dan tidak dikirim ke server. Situs ini tidak memakai pelacak atau analitik. Peta lokasi dimuat dari OpenStreetMap.',
   ],
-  ['Integritas', 'Tidak ada bot, pembelian pengikut, atau pengaturan hasil voting. Semua angka berasal dari suara dan data yang benar-benar masuk.'],
-  ['Pengungkapan AI', 'Desain, kode, dan draf konten website ini dibantu AI (Claude, Anthropic). Tim kelompok meninjau dan bertanggung jawab atas isinya.'],
+  ['Integritas', 'Tidak ada bot, pembelian pengikut, atau pengaturan hasil pemungutan suara. Semua angka berasal dari suara dan data yang benar-benar masuk.'],
+  ['Pengungkapan AI', 'Desain, kode, dan draf konten situs ini dibantu AI (Claude, Anthropic). Tim kelompok meninjau dan bertanggung jawab atas isinya.'],
 ];
 ---
 
@@ -53,10 +53,11 @@ const terms = [
       <div>
         <h3>Saluran pengaduan</h3>
         <p>
-          Dugaan penyalahgunaan data, manipulasi voting, atau unggahan yang melanggar tata krama bisa dilaporkan lewat Aspirasi
-          dengan kategori Pengaduan integritas, atau lewat tombol Laporkan di forum. Komite Integritas menjawab secara tertulis.
+          Dugaan penyalahgunaan data, kecurangan pemungutan suara, atau unggahan yang melanggar tata tertib dapat dilaporkan
+          melalui Aspirasi dengan kategori Pengaduan integritas atau melalui tombol Laporkan di forum. Komite Integritas akan
+          menjawab secara tertulis.
         </p>
-        <a class="btn btn--primary" href="#partisipasi-aspirasi">Ajukan pengaduan lewat Aspirasi</a>
+        <a class="btn btn--primary" href="#partisipasi-aspirasi">Ajukan pengaduan melalui Aspirasi</a>
       </div>
     </div>
 

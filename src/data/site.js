@@ -21,11 +21,19 @@ export const party = {
   name: 'Partai Simpul',
   short: 'Simpul',
   slogan: 'Terhubung, Berembuk, Memutuskan',
-  tagline: 'Politik yang bisa kamu ikut putuskan.',
+  tagline: 'Politik yang ikut Anda tentukan.',
   // Label wajib dari panduan. Satu-satunya em dash di situs ini.
   label: 'Simulasi Akademik — Bukan Partai Politik Resmi',
   course: 'Proyek akhir mata kuliah Politik Digital 2026',
   campus: 'FISIP Universitas Airlangga',
+};
+
+// Lokasi pameran. Koordinat gedung FISIP diambil dari data OpenStreetMap.
+export const venue = {
+  name: 'FISIP Universitas Airlangga',
+  address: 'Jl. Dharmawangsa Dalam, Airlangga, Kecamatan Gubeng, Surabaya, Jawa Timur 60286',
+  lat: -7.27203,
+  lon: 112.75942,
 };
 
 // short = nama pendek untuk tombol Peta di layar sempit.
@@ -46,7 +54,7 @@ export const social = [
     name: 'Instagram',
     handle: '@partai.simpul',
     href: 'https://www.instagram.com/partai.simpul',
-    use: 'Konten edukasi isu, pengenalan kepemimpinan, dan ajakan mencoba website.',
+    use: 'Konten edukasi isu, pengenalan kepemimpinan, dan ajakan mencoba situs.',
   },
   {
     name: 'TikTok',
@@ -58,42 +66,62 @@ export const social = [
 
 export const groups = [
   'Mahasiswa atau pelajar',
-  'Pekerja platform (ojol, kurir, freelancer, kreator)',
+  'Pekerja platform (pengemudi daring, kurir, pekerja lepas, kreator konten)',
   'Pelaku UMKM digital',
   'Pekerja formal',
   'Lainnya',
 ];
 
-// ISI: name diisi nama anggota kelompok yang memegang kursi. Kosongkan (null) bila belum ada.
-export const council = [
+// ISI: name diisi nama anggota kelompok yang memegang jabatan. Biarkan null bila belum ada.
+// Pengurus harian Dewan Pimpinan Pusat. role = peran dalam pembagian kerja proyek (panduan bagian C).
+export const executives = [
   {
-    seat: 'Juru Bicara Bergilir',
+    seat: 'Ketua Umum',
     role: 'Political Strategist / Party Leader',
-    duty: 'Mewakili Dewan di depan publik selama tiga bulan, lalu bergilir. Tidak boleh memutuskan sendiri hal yang menjadi wewenang Rembuk.',
+    duty: 'Memimpin rapat pimpinan dan menjalankan keputusan Rembuk bersama pengurus lain. Tidak memiliki hak veto.',
     name: null,
   },
   {
-    seat: 'Kursi Kebijakan',
+    seat: 'Wakil Ketua Umum',
+    duty: 'Membantu Ketua Umum, menggantikannya bila berhalangan, dan memantau tindak lanjut keputusan Rembuk.',
+    name: null,
+  },
+  {
+    seat: 'Sekretaris Jenderal',
+    role: 'Project Coordinator',
+    duty: 'Mengurus administrasi, notulen Rembuk, dokumentasi, dan penggabungan laporan.',
+    name: null,
+  },
+  {
+    seat: 'Bendahara Umum',
+    duty: 'Mengelola keuangan partai dan membuka laporan anggaran setiap kegiatan kepada anggota.',
+    name: null,
+  },
+];
+
+export const divisions = [
+  {
+    seat: 'Ketua Bidang Kebijakan',
     role: 'Policy Researcher',
     duty: 'Menyusun kajian tiga agenda dan menjawab aspirasi yang mencapai 25 dukungan dalam 7 hari.',
     name: null,
   },
   {
-    seat: 'Kursi Keanggotaan dan Partisipasi',
+    seat: 'Ketua Bidang Keanggotaan dan Partisipasi',
     role: 'Membership & Participation Designer',
-    duty: 'Merancang pendaftaran, voting, dan forum, serta memastikan aturan keputusan dijalankan.',
+    duty: 'Merancang pendaftaran, pemungutan suara, dan forum, serta mengoordinasikan relawan moderator.',
     name: null,
   },
   {
-    seat: 'Kursi Platform dan Data',
+    seat: 'Ketua Bidang Platform dan Data',
     role: 'Website Developer',
-    duty: 'Membangun dan merawat platform, menjaga data anggota seminimal mungkin.',
+    duty: 'Membangun dan merawat situs serta membatasi pengumpulan data anggota seperlunya.',
     name: null,
   },
   {
-    seat: 'Kursi Media dan Kreatif',
-    role: 'Social Media Strategist + Creative & Content Designer',
-    duty: 'Mengelola akun, kalender konten, dan identitas visual.',
+    seat: 'Ketua Bidang Media dan Kreatif',
+    role: 'Social Media Strategist, Creative & Content Designer',
+    duty: 'Mengelola akun media sosial, kalender konten, dan identitas visual.',
     name: null,
   },
 ];
@@ -102,13 +130,7 @@ export const bodies = [
   {
     body: 'Komite Integritas dan Data',
     role: 'Governance & Evaluation',
-    duty: 'Merumuskan pertanyaan Rembuk secara netral, mengaudit pemungutan suara, menangani pengaduan, dan menegakkan perlindungan data. Anggotanya tidak boleh duduk di Dewan.',
-    name: null,
-  },
-  {
-    body: 'Sekretariat',
-    role: 'Project Coordinator',
-    duty: 'Dokumentasi, notulen Rembuk, dan penggabungan laporan.',
+    duty: 'Merumuskan pertanyaan Rembuk secara netral, mengaudit pemungutan suara, menangani pengaduan, dan menegakkan perlindungan data. Anggotanya tidak boleh merangkap sebagai pengurus.',
     name: null,
   },
 ];
@@ -128,7 +150,7 @@ export const issues = [
       'Forum perundingan kolektif antara perwakilan pekerja, platform, dan pemerintah.',
     ],
     digital:
-      'Peta Tarif Warga: pekerja melaporkan tarif per perjalanan secara anonim, sehingga data publik bisa dibandingkan. Petisi digital dan Rembuk khusus pekerja platform menentukan tuntutan yang didahulukan.',
+      'Melalui Peta Tarif Warga, pekerja melaporkan tarif per perjalanan secara anonim sehingga datanya dapat dibandingkan. Petisi digital dan Rembuk khusus pekerja platform menentukan tuntutan yang didahulukan.',
     indicators: [
       'Cakupan jaminan sosial ketenagakerjaan pekerja platform mencapai 60% dalam 3 tahun.',
       'Banding penonaktifan akun selesai paling lama 7 hari kerja (median).',
@@ -145,12 +167,12 @@ export const issues = [
     affected:
       'Warga kota dan desa, pengurus RT dan RW, jurnalis dan peneliti, mahasiswa, serta kelompok rentan yang jarang hadir di musyawarah.',
     solutions: [
-      'Kewajiban mempublikasikan APBD dalam format terbuka (CSV) beserta ringkasan berbahasa sederhana.',
+      'Kewajiban memublikasikan APBD dalam format terbuka (CSV) beserta ringkasan berbahasa sederhana.',
       'Alokasi sebagian belanja modal untuk anggaran partisipatif yang diputuskan lewat pemungutan suara warga.',
-      'Pelacak usulan: setiap usulan warga punya status dan alasan keputusan yang bisa dilihat publik.',
+      'Setiap usulan warga memiliki status dan alasan keputusan yang dapat dilihat publik.',
     ],
     digital:
-      'Simpul menerapkannya dulu pada dirinya sendiri: anggaran partai dibuka per kegiatan dan anggota memutuskan pos kegiatan lewat Rembuk. Pelacak aspirasi di situs ini memakai alur status yang sama.',
+      'Partai Simpul lebih dahulu menerapkannya pada diri sendiri. Anggaran partai dibuka per kegiatan dan anggota memutuskan pos kegiatan melalui Rembuk. Pelacak aspirasi di situs ini memakai alur status yang sama.',
     indicators: [
       'Sedikitnya 5% belanja modal dialokasikan lewat anggaran partisipatif.',
       '100% usulan warga mendapat status dan alasan tertulis dalam 30 hari.',
@@ -163,16 +185,16 @@ export const issues = [
     short: 'Hak digital',
     title: 'Hak digital dan ruang digital yang sehat',
     problem:
-      'Platform, instansi, dan kampanye politik mengumpulkan data pribadi warga dalam jumlah besar. UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi sudah ada, tetapi warga perlu kepastian lembaga pengawas yang independen dan sanksi yang ditegakkan. Iklan politik yang menarget kelompok tertentu juga sulit dilacak pembayarnya.',
+      'Platform, instansi, dan tim kampanye politik mengumpulkan data pribadi warga dalam jumlah besar. UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi sudah ada, tetapi warga perlu kepastian lembaga pengawas yang independen dan sanksi yang ditegakkan. Pembayar iklan politik yang menargetkan kelompok tertentu juga sulit dilacak.',
     affected:
       'Pengguna media sosial, pemilih pemula, lansia dan warga dengan literasi digital rendah, serta pegiat dan jurnalis.',
     solutions: [
       'Mendorong lembaga pengawas pelindungan data yang independen, berdaya, dan melapor secara terbuka.',
-      'Registri publik iklan politik daring: siapa pembayar, berapa dana, dan kelompok sasarannya.',
+      'Registri publik iklan politik daring yang memuat pembayar, jumlah dana, dan kelompok sasaran.',
       'Program literasi digital dan cek fakta di kampus dan komunitas.',
     ],
     digital:
-      'Cek Fakta Warga: anggota menandai klaim yang perlu diperiksa, relawan terlatih memverifikasinya dengan sumber terbuka. Platform Simpul menjadi contoh: data minimal, akun bisa dihapus kapan saja, dan aturan platform dibuka untuk audit.',
+      'Dalam Cek Fakta Warga, anggota menandai klaim yang perlu diperiksa dan relawan terlatih memverifikasinya dengan sumber terbuka. Platform Simpul juga memberi contoh dengan mengumpulkan data seperlunya, mengizinkan akun dihapus kapan saja, dan membuka aturannya untuk diaudit.',
     indicators: [
       '100% iklan politik daring partai tercatat di registri publik.',
       'Laporan kebocoran data dari anggota ditindaklanjuti secara tertulis dalam 14 hari.',
@@ -189,7 +211,7 @@ export const ballots = [
     status: 'open',
     closes: 'Ditutup Jumat pukul 20.00 WIB (jadwal simulasi)',
     question:
-      'Bagaimana posisi Simpul terhadap iklan politik daring yang menarget kelompok pemilih tertentu?',
+      'Bagaimana sikap Partai Simpul terhadap iklan politik daring yang menargetkan kelompok pemilih tertentu?',
     options: [
       { id: 'larang', label: 'Dilarang' },
       { id: 'lapor', label: 'Boleh jika dilaporkan terbuka' },
@@ -234,45 +256,45 @@ export const rulesMatrix = {
     {
       label: 'Hak akses',
       cells: [
-        'Pengunjung membaca. Anggota mengajukan dan mendukung, satu dukungan per anggota untuk tiap usulan.',
-        'Pengunjung membaca. Anggota menulis dan membalas. Relawan moderator meninjau laporan.',
+        'Pengunjung dapat membaca. Anggota dapat mengajukan usulan dan memberi satu dukungan untuk setiap usulan.',
+        'Pengunjung dapat membaca. Anggota dapat menulis dan membalas. Relawan moderator meninjau laporan.',
         gas
-          ? 'Hanya anggota aktif. Satu anggota satu suara, tanpa nama (hanya ID anggota acak).'
+          ? 'Hanya anggota aktif. Satu anggota satu suara, dicatat dengan nomor anggota acak tanpa nama.'
           : 'Hanya anggota aktif. Satu anggota satu suara, rahasia.',
       ],
     },
     {
       label: 'Prosedur keputusan',
       cells: [
-        '25 dukungan: dikaji Kursi Kebijakan dalam 7 hari. 100 dukungan: wajib masuk agenda Rembuk Pekanan berikutnya.',
-        'Forum tidak memutuskan, ia menyusun pertimbangan. Ringkasan diskusi dilampirkan pada usulan yang masuk Rembuk.',
-        'Sah bila kuorum 30% anggota aktif terpenuhi dan satu opsi unggul. Perubahan statuta butuh dua pertiga suara.',
+        'Usulan dengan 25 dukungan dikaji Bidang Kebijakan dalam 7 hari. Usulan dengan 100 dukungan wajib masuk agenda Rembuk Pekanan berikutnya.',
+        'Forum tidak mengambil keputusan. Forum menyusun pertimbangan, dan ringkasan diskusinya dilampirkan pada usulan yang masuk Rembuk.',
+        'Sah apabila kuorum 30% anggota aktif terpenuhi dan satu opsi unggul. Perubahan statuta memerlukan dua pertiga suara.',
       ],
     },
     {
       label: 'Moderasi',
       cells: [
-        'Duplikat dan ujaran kebencian disaring sebelum tayang. Alasan penolakan dicatat.',
-        'Aturan tertulis. Laporan anggota menyembunyikan unggahan sementara, moderator memutuskan dalam 24 jam dan mencatatnya di log.',
-        'Pertanyaan dirumuskan netral oleh Komite Integritas. Kampanye untuk sebuah opsi hanya di forum, bukan di bilik suara.',
+        'Kata kasar ditolak sebelum terkirim. Moderator meninjau usulan ganda dan ujaran kebencian.',
+        'Aturan forum tertulis. Unggahan yang dilaporkan disembunyikan sementara. Moderator memutuskan dalam 24 jam dan mencatat keputusannya.',
+        'Komite Integritas merumuskan pertanyaan secara netral. Kampanye untuk suatu opsi hanya boleh dilakukan di forum.',
       ],
     },
     {
       label: 'Transparansi hasil',
       cells: [
-        'Jumlah dukungan dan status tampil langsung. Alasan setiap keputusan dipublikasikan.',
-        'Log moderasi dan jumlah laporan dipublikasikan tiap bulan.',
-        'Partisipasi dan kuorum tampil langsung. Hasil per opsi tampil untuk yang sudah memilih dan untuk semua orang saat ditutup, disusul audit Komite Integritas.',
+        'Jumlah dukungan dan status dapat dilihat langsung. Alasan setiap keputusan dipublikasikan.',
+        'Catatan moderasi dan jumlah laporan dipublikasikan setiap bulan.',
+        'Partisipasi dan kuorum dapat dilihat langsung. Hasil setiap opsi dapat dilihat oleh pemilih dan, setelah ditutup, oleh semua orang. Komite Integritas kemudian mengauditnya.',
       ],
     },
     {
       label: 'Perlindungan data',
       cells: [
         'Memakai nama panggilan. Penulis boleh memilih tampil anonim.',
-        'Memakai nama panggilan, tanpa pelacak lintas situs.',
+        'Memakai nama panggilan tanpa pelacak lintas situs.',
         gas
-          ? 'Catatan suara memakai ID anggota acak, bukan nama. Hanya pengelola spreadsheet yang bisa melihat pilihan per ID.'
-          : 'Kotak suara dipisah dari daftar pemilih, sehingga pilihan tidak terhubung dengan identitas.',
+          ? 'Catatan suara memakai nomor anggota acak, bukan nama. Hanya pengelola Google Spreadsheet yang dapat melihat pilihan setiap nomor.'
+          : 'Kotak suara dipisahkan dari daftar pemilih sehingga pilihan tidak terhubung dengan identitas.',
       ],
     },
   ],
@@ -281,62 +303,65 @@ export const rulesMatrix = {
 export const risks = [
   {
     title: 'Dominasi pemimpin (hyperleadership)',
-    risk: 'Satu juru bicara menjadi wajah tunggal dan agenda mengikuti figur, bukan keputusan anggota.',
+    risk: 'Seorang tokoh, termasuk Ketua Umum, menjadi satu-satunya wajah partai sehingga agenda mengikuti tokoh, bukan keputusan anggota.',
     handling:
-      'Juru bicara bergilir tiap tiga bulan, batas dua periode berturut-turut, dan penarikan mandat bila 10% anggota meminta.',
+      'Kepemimpinan kolektif kolegial tanpa hak veto, juru bicara bergilir setiap tiga bulan, masa jabatan paling lama dua periode berturut-turut, dan penarikan mandat apabila diminta 10% anggota.',
   },
   {
     title: 'Manipulasi voting',
-    risk: 'Akun ganda atau pendaftaran massal menjelang pemungutan suara mengubah hasil.',
+    risk: 'Akun ganda atau pendaftaran massal menjelang pemungutan suara dapat mengubah hasil.',
     handling:
       gas
-        ? `Verifikasi anggota, masa tunggu 7 hari sebelum hak suara aktif, dan audit Komite Integritas. Pada simulasi ini anggota demo hanya sementara: suara dan tulisannya dihapus saat selesai atau setelah ${DEMO_TTL_MIN} menit, jadi tidak membentuk hasil. Hasil tetap tidak mewakili sistem nyata.`
-        : 'Verifikasi anggota, masa tunggu 7 hari sebelum hak suara aktif, dan audit Komite Integritas. Pada simulasi ini satu perangkat bisa membuat banyak anggota demo, jadi hasilnya tidak mewakili sistem nyata.',
+        ? `Anggota diverifikasi dan menunggu 7 hari sebelum memiliki hak suara, lalu hasilnya diaudit Komite Integritas. Dalam simulasi ini anggota demo hanya sementara. Suara dan tulisannya dihapus setelah selesai atau setelah ${DEMO_TTL_MIN} menit. Hasilnya tetap tidak mewakili sistem nyata.`
+        : 'Anggota diverifikasi dan menunggu 7 hari sebelum memiliki hak suara, lalu hasilnya diaudit Komite Integritas. Dalam simulasi ini satu perangkat dapat membuat banyak anggota demo sehingga hasilnya tidak mewakili sistem nyata.',
   },
   {
     title: 'Penyalahgunaan data',
-    risk: 'Data anggota dipakai di luar tujuan atau jatuh ke pihak ketiga.',
+    risk: 'Data anggota dipakai di luar tujuan atau jatuh ke tangan pihak ketiga.',
     handling:
       gas
-        ? 'Data seminimal mungkin, hak hapus kapan saja, aturan platform dibuka untuk audit, dan catatan suara hanya memakai ID anggota acak, bukan nama.'
-        : 'Data seminimal mungkin, hak hapus kapan saja, aturan platform dibuka untuk audit, dan kotak suara dipisah dari identitas.',
+        ? 'Data dikumpulkan seperlunya dan dapat dihapus kapan saja, aturan platform dibuka untuk diaudit, dan catatan suara hanya memakai nomor anggota acak.'
+        : 'Data dikumpulkan seperlunya dan dapat dihapus kapan saja, aturan platform dibuka untuk diaudit, dan kotak suara dipisahkan dari identitas.',
   },
   {
     title: 'Ketimpangan akses',
     risk: 'Anggota tanpa perangkat, sinyal, atau kemampuan digital tertinggal dari proses keputusan.',
     handling:
-      'Antarmuka ringan, titik akses dan pendamping di Simpul Wilayah, dan pemungutan suara dibuka selama 3 hari.',
+      'Tampilan situs dibuat ringan, pengurus wilayah menyediakan titik akses dan pendamping, dan pemungutan suara dibuka selama 3 hari.',
   },
   {
     title: 'Partisipasi simbolis',
     risk: 'Suara dikumpulkan tetapi tidak mengubah keputusan.',
     handling:
-      'Ambang yang mengikat (kuorum, mayoritas, 100 dukungan) dan batas waktu tindak lanjut, dengan laporan kepatuhan tiap bulan.',
+      'Kuorum, suara terbanyak, dan ambang 100 dukungan bersifat mengikat, disertai batas waktu tindak lanjut dan laporan kepatuhan setiap bulan.',
   },
 ];
 
-// ISI: tambahkan kegiatan nyata kelompok bila ada.
+// ISI: tambahkan kegiatan nyata kelompok bila ada. image: berkas di folder public/.
 export const news = [
   {
     id: 'n-pameran',
     type: 'kegiatan',
     date: '27 November 2026',
-    title: 'Pameran dan Workshop Partai Digital di FISIP Universitas Airlangga',
-    text: 'Coba daftar, memilih, berdiskusi, dan mengajukan aspirasi langsung di stan Simpul. Lima sesi: pengenalan partai dan masalah politik, demo website dan membership, simulasi fitur partisipasi, media sosial dan keunggulan, serta tanya jawab dan refleksi.',
+    title: 'Pameran dan Lokakarya Partai Digital di FISIP Universitas Airlangga',
+    text: 'Pengunjung stan Partai Simpul dapat mendaftar, memilih, berdiskusi, dan mengajukan aspirasi. Kegiatan terdiri atas lima sesi, yaitu pengenalan partai dan masalah politik, demonstrasi situs dan keanggotaan, simulasi fitur partisipasi, media sosial dan keunggulan partai, serta tanya jawab dan refleksi.',
+    image: 'news/pameran.webp',
     featured: true,
   },
   {
     id: 'n-uji',
     type: 'berita',
     date: '27 November 2026',
-    title: 'Platform partisipasi Simpul dibuka untuk uji coba',
-    text: 'Voting, forum, dan aspirasi di halaman ini bisa dicoba dengan mendaftar sebagai anggota simulasi atau masuk sebagai anggota demo. Data yang kamu kirim bisa dihapus kapan saja lewat tombol Hapus data saya.',
+    title: 'Platform partisipasi Partai Simpul dibuka untuk uji coba',
+    text: 'Pemungutan suara, forum, dan aspirasi dapat dicoba dengan mendaftar sebagai anggota simulasi atau masuk sebagai anggota demo. Data yang Anda kirim dapat dihapus kapan saja.',
+    image: 'news/uji-coba.webp',
   },
   {
     id: 'n-medsos',
     type: 'kegiatan',
     date: '27 November 2026',
-    title: 'Enam konten pertama di media sosial',
-    text: 'Pengenalan partai, dua konten edukasi isu, pengenalan kepemimpinan, ajakan mencoba website, dan satu konten interaktif.',
+    title: 'Enam konten media sosial Partai Simpul',
+    text: 'Konten yang disiapkan mencakup pengenalan partai, dua konten edukasi isu, pengenalan kepemimpinan, ajakan mencoba situs, dan satu konten interaktif.',
+    image: 'news/media-sosial.webp',
   },
 ];

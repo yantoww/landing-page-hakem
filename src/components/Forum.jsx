@@ -108,7 +108,7 @@ function NewThread({ member, onCreated }) {
           value={v.text}
           onChange={(e) => setV({ ...v, text: e.target.value })}
         />
-        <p className="field__hint">Maksimal 600 karakter. Bahas gagasan, jangan menyerang orang.</p>
+        <p className="field__hint">Maksimal 600 karakter. Bahas gagasan tanpa menyerang pribadi.</p>
       </div>
       {err && (
         <p className="field__error" role="alert">
@@ -134,21 +134,21 @@ export default function Forum() {
     <div className="forum">
       <div className="forum__intro">
         <p>
-          Forum tidak mengambil keputusan. Ia dipakai menyusun pertimbangan sebelum sebuah usulan masuk Rembuk Pekanan.
+          Forum tidak mengambil keputusan. Forum digunakan untuk menyusun pertimbangan sebelum usulan masuk Rembuk Pekanan.
         </p>
         <ul className="rules-list" aria-label="Tata krama forum">
-          <li>Bahas gagasan, bukan menyerang orang.</li>
+          <li>Bahas gagasan tanpa menyerang pribadi.</li>
           <li>Tanpa ujaran kebencian, doxing, atau tuduhan tanpa sumber.</li>
           <li>Tulisan berisi kata kasar ditolak sebelum terkirim, juga pada nama panggilan dan aspirasi.</li>
-          <li>Satu orang satu akun. Jangan menyamar sebagai anggota lain.</li>
-          <li>Laporan menyembunyikan unggahan sementara sampai moderator memutuskan.</li>
+          <li>Satu orang hanya memakai satu akun. Jangan menyamar sebagai anggota lain.</li>
+          <li>Unggahan yang dilaporkan disembunyikan sementara sampai moderator memutuskan.</li>
         </ul>
       </div>
 
       {!member && (
         <Gate
           what="menulis di forum"
-          extra={gasEnabled() ? undefined : 'Menekan Laporkan pada sebuah unggahan otomatis memasukkanmu sebagai anggota demo.'}
+          extra={gasEnabled() ? undefined : 'Jika Anda menekan Laporkan pada sebuah unggahan, Anda otomatis masuk sebagai anggota demo.'}
         />
       )}
 
@@ -233,9 +233,9 @@ export default function Forum() {
       )}
 
       <details className="log">
-        <summary>Log moderasi di perangkat ini ({s.reports.length})</summary>
+        <summary>Catatan moderasi di perangkat ini ({s.reports.length})</summary>
         {s.reports.length === 0 ? (
-          <p className="empty">Belum ada laporan. Tombol Laporkan pada unggahan akan mencatatnya di sini.</p>
+          <p className="empty">Belum ada laporan. Laporan yang Anda kirim akan tercatat di sini.</p>
         ) : (
           <ul>
             {s.reports.map((r) => (

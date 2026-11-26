@@ -177,10 +177,10 @@ function submitVote_(b) {
     return String(r[1]).toUpperCase() === member.id && plain_(r[2]) === topic;
   });
   if (already) {
-    throw new UserError('Kamu sudah memberi suara pada topik ini. Satu anggota hanya punya satu suara.');
+    throw new UserError('Anda sudah memberi suara pada topik ini. Satu anggota hanya memiliki satu suara.');
   }
   appendRow_(sheet, [new Date(), member.id, topic, choice]);
-  return { message: 'Suaramu tercatat.', data: { topic: topic, choice: choice } };
+  return { message: 'Suara Anda tercatat.', data: { topic: topic, choice: choice } };
 }
 
 function submitAspiration_(b) {
@@ -203,13 +203,13 @@ function supportAspiration_(b) {
   for (var i = 0; i < rows.length; i++) {
     if (String(rows[i][7]) !== aspirationId) continue;
     var supporters = String(rows[i][8]).split(',').filter(Boolean);
-    if (supporters.indexOf(member.id) !== -1) throw new UserError('Kamu sudah mendukung usulan ini.');
+    if (supporters.indexOf(member.id) !== -1) throw new UserError('Anda sudah mendukung usulan ini.');
     var sheetRow = i + 2; // baris 1 adalah header
     var total = (Number(rows[i][6]) || 0) + 1;
     supporters.push(member.id);
     sheet.getRange(sheetRow, 7).setValue(total);
     sheet.getRange(sheetRow, 9).setValue(supporters.join(','));
-    return { message: 'Dukunganmu tercatat.', data: { aspirationId: aspirationId, support: total } };
+    return { message: 'Dukungan Anda tercatat.', data: { aspirationId: aspirationId, support: total } };
   }
   throw new UserError('Aspirasi tidak ditemukan.');
 }
@@ -251,7 +251,7 @@ function deleteMember_(b) {
       if (String(r[1]).toUpperCase() === id) sheet.getRange(k + 2, 3).setValue('Anggota terhapus');
     });
   });
-  return { message: 'Datamu dihapus.', data: { memberId: id } };
+  return { message: 'Data Anda sudah dihapus.', data: { memberId: id } };
 }
 
 // Hapus menyeluruh semua jejak sekumpulan anggota (dipakai untuk anggota demo): tulisan aspirasi mereka dihapus,

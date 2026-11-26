@@ -89,7 +89,7 @@ a {
 .hero,
 .sec--dark,
 .site-foot,
-.news__feat,
+.ncard,
 .member-zone,
 .about__vision {
   --focus: var(--kunyit);
@@ -1242,6 +1242,55 @@ h4 {
 .seat__role {
   font-size: 0.875rem;
 }
+/* Pengurus berada di dalam kotak Dewan Pimpinan Pusat, tanpa garis pohon. */
+.node--dpp {
+  background: var(--paper);
+  border-width: 3px;
+}
+.node .officers__group {
+  margin-top: 12px;
+}
+.node .officers__label {
+  margin: 0 0 8px;
+  font-weight: 800;
+}
+.tree .officers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+.tree .officers > li {
+  display: grid;
+  margin: 0;
+}
+.tree .officers > li::before,
+.tree .officers > li::after,
+.tree .officers > li > .node::before {
+  content: none;
+}
+.tree .officers .node {
+  align-content: start;
+  background: var(--white);
+}
+.tree .officers--core > li:nth-child(-n + 2) {
+  grid-column: 1 / -1;
+}
+.tree .officers--core > li:first-child .node {
+  background: var(--nila-100);
+  border-width: 3px;
+}
+@media (max-width: 639px) {
+  .tree .officers {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* kotak di dalam kotak: padding diperkecil agar teks tidak terlalu sempit di ponsel */
+  .node--dpp,
+  .tree .officers .node {
+    padding: 10px 12px;
+  }
+}
 
 .lead__pair {
   display: grid;
@@ -2319,78 +2368,89 @@ textarea.input {
   background: var(--nila-900);
   color: var(--white);
 }
+/* Kartu berita: gambar memenuhi kartu, teks di atas lapisan nila agar tetap terbaca. */
 .news {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(28px, 4vw, 44px);
-}
-/* Pengumuman utama: pita lebar (judul kiri, keterangan kanan) agar tidak ada ruang kosong. */
-.news__feat {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: 12px clamp(28px, 4vw, 56px);
-  align-items: start;
-  padding: clamp(24px, 3vw, 40px);
-  background: var(--nila-900);
-  color: var(--on-dark-2);
-  border-radius: var(--r-3);
-}
-.news__feat h3 {
-  grid-column: 1;
-  grid-row: 1 / span 3;
-  margin: 0;
-  color: var(--white);
-  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
-  line-height: 1.12;
-}
-.news__feat p {
-  grid-column: 2;
-  margin: 0;
-}
-.news__tag {
-  color: var(--kunyit);
-  font-weight: 700;
-}
-.news__where {
-  color: var(--white);
-  font-weight: 600;
-}
-.news__rows {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 clamp(28px, 4vw, 56px);
-  align-content: start;
-  border-top: 3px solid var(--nila-900);
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
 }
-.news__rows li {
-  display: grid;
-  grid-template-columns: 112px minmax(0, 1fr);
-  gap: 4px 20px;
-  padding: 20px 0;
-  border-bottom: 1px solid var(--hair);
+.ncard {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 340px;
+  overflow: hidden;
+  background: var(--nila-900);
+  color: var(--on-dark-2);
+  border-radius: var(--r-3);
 }
-.news__rows h3 {
-  margin: 0 0 4px;
-  font-size: 1.125rem;
+.ncard[hidden] {
+  display: none;
 }
-.news__rows p {
+.ncard--feat {
+  grid-row: span 2;
+}
+.ncard img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+.ncard__body {
+  padding: clamp(18px, 2.4vw, 30px);
+  padding-top: 180px;
+  /* lapisan mengikuti tinggi teks: gambar terlihat di atas, teks selalu di bidang yang sudah gelap */
+  background: linear-gradient(to bottom, rgba(20, 27, 77, 0) 0, rgba(20, 27, 77, 0.2) 110px, rgba(20, 27, 77, 0.985) 165px, rgba(20, 27, 77, 0.99) 100%);
+}
+.ncard h3 {
+  margin: 4px 0 8px;
+  color: var(--white);
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+.ncard--feat h3 {
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.1rem);
+  line-height: 1.12;
+}
+.ncard p {
   margin: 0;
 }
-.news__rows li > div > h3 + p {
-  margin-top: 0;
-}
-.news__date {
+.ncard__tag {
+  color: var(--kunyit);
   font-weight: 700;
-  font-size: 0.9375rem;
-  font-variant-numeric: tabular-nums;
-}
-.news__type {
-  grid-column: 2;
-  color: var(--ink-2);
   font-size: 0.875rem;
+}
+.venue {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: clamp(24px, 4vw, 48px);
+  align-items: stretch;
+  margin-top: clamp(56px, 7vw, 96px);
+}
+.venue h3 {
+  margin-bottom: 14px;
+}
+.venue address {
+  font-style: normal;
+  color: var(--ink-2);
+}
+.venue__coord {
+  font-weight: 700;
+}
+.venue__map {
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+  border: 2px solid var(--nila-900);
+  border-radius: var(--r-3);
 }
 .posters {
   margin-top: clamp(56px, 7vw, 96px);
@@ -2481,6 +2541,10 @@ textarea.input {
 }
 .sec--dark h3 {
   color: var(--white);
+}
+/* Panel putih di dalam bagian gelap: judul kembali ke warna tinta (tanpa ini putih di atas putih). */
+.sec--dark .panel h3 {
+  color: var(--ink);
 }
 .contact__grid h3 {
   margin-bottom: 18px;
@@ -2594,16 +2658,12 @@ textarea.input {
   }
   .alerts li,
   .asp__item,
-  .news__feat,
-  .news__rows {
+  .news,
+  .venue {
     grid-template-columns: minmax(0, 1fr);
   }
-  .news__feat h3 {
-    grid-column: 1;
+  .ncard--feat {
     grid-row: auto;
-  }
-  .news__feat p {
-    grid-column: 1;
   }
   .alerts dl {
     grid-template-columns: minmax(0, 1fr);

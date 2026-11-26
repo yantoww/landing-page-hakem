@@ -28,8 +28,8 @@ function Form({ members, onDone }) {
     const e = {};
     const nick = v.nick.trim();
     if (nick.length < 2 || nick.length > 30) e.nick = 'Tulis nama panggilan 2 sampai 30 karakter.';
-    else if (/\d{6,}|@/.test(nick)) e.nick = 'Pakai nama panggilan saja, tanpa nomor panjang atau alamat email.';
-    if (!v.group) e.group = 'Pilih kelompok yang paling dekat denganmu.';
+    else if (/\d{6,}|@/.test(nick)) e.nick = 'Gunakan nama panggilan saja, tanpa nomor panjang atau alamat surel.';
+    if (!v.group) e.group = 'Pilih kelompok yang paling sesuai dengan Anda.';
     if (!v.consent) e.consent = 'Centang persetujuan agar kartu anggota bisa dibuat.';
     return e;
   };
@@ -81,13 +81,13 @@ function Form({ members, onDone }) {
           aria-describedby="reg-nick-h"
         />
         <p id="reg-nick-h" className={err.nick ? 'field__error' : 'field__hint'} role={err.nick ? 'alert' : undefined}>
-          {err.nick || 'Cukup nama panggilan. Jangan tulis nama lengkap, NIK, email, atau nomor telepon.'}
+          {err.nick || 'Cukup nama panggilan. Jangan menulis nama lengkap, NIK, surel, atau nomor telepon.'}
         </p>
       </div>
 
       <div className="field">
         <label className="field__label" htmlFor="reg-group">
-          Kelompok yang paling mewakili kamu
+          Kelompok yang paling mewakili Anda
         </label>
         <select
           id="reg-group"
@@ -113,7 +113,7 @@ function Form({ members, onDone }) {
       </div>
 
       <fieldset className="field">
-        <legend className="field__label">Isu yang paling kamu pedulikan (boleh lebih dari satu)</legend>
+        <legend className="field__label">Isu yang paling Anda pedulikan (boleh lebih dari satu)</legend>
         <div className="checks">
           {issues.map((i) => (
             <label key={i.id} className="check">
@@ -148,8 +148,8 @@ function Form({ members, onDone }) {
           />
           <span>
             {gasEnabled()
-              ? 'Saya paham ini simulasi akademik. Nama panggilan, kelompok, dan isu yang saya pilih disimpan di Google Spreadsheet panitia agar hasilnya tampil di semua perangkat, dan saya tidak memasukkan data pribadi sensitif.'
-              : 'Saya paham ini simulasi akademik. Data saya hanya tersimpan di browser ini dan tidak dikirim ke mana pun, dan saya tidak memasukkan data pribadi sensitif.'}
+              ? 'Saya memahami bahwa ini simulasi akademik. Nama panggilan, kelompok, dan isu yang saya pilih disimpan di Google Spreadsheet panitia agar hasilnya tampil di semua perangkat, dan saya tidak memasukkan data pribadi sensitif.'
+              : 'Saya memahami bahwa ini simulasi akademik. Data saya hanya tersimpan di peramban ini, tidak dikirim ke mana pun, dan saya tidak memasukkan data pribadi sensitif.'}
           </span>
         </label>
         {err.consent && (
@@ -168,12 +168,12 @@ function Form({ members, onDone }) {
         {busy ? 'Menyimpan data...' : 'Buat kartu anggota simulasi'}
       </button>
       <p className="field__hint">
-        Pada sistem nyata ada verifikasi dan masa tunggu 7 hari sebelum hak suara aktif. Di simulasi ini keduanya dilewati.
+        Pada sistem nyata terdapat verifikasi dan masa tunggu 7 hari sebelum hak suara aktif. Keduanya dilewati dalam simulasi ini.
       </p>
 
       {members.length > 0 && (
         <p className="gate__back">
-          Sudah punya kartu di perangkat ini?{' '}
+          Sudah memiliki kartu di perangkat ini?{' '}
           {members.slice(-4).map((m) => (
             <button key={m.id} type="button" className="linkbtn" onClick={() => signIn(m.id)}>
               {m.nick}
@@ -258,14 +258,14 @@ function Pass({ m, others, focusOnMount }) {
       </div>
 
       <div className="member__body">
-        <h3 className="member__title">Kartu aktif. Hak suaramu berlaku.</h3>
+        <h3 className="member__title">Kartu anggota aktif. Anda sudah memiliki hak suara.</h3>
         <p>
-          Kelompok: {m.group}.{issueNames.length > 0 && ` Isu yang kamu pilih: ${issueNames.join(', ')}.`}{' '}
+          Kelompok: {m.group}.{issueNames.length > 0 && ` Isu pilihan Anda: ${issueNames.join(', ')}.`}{' '}
           {demo
-            ? `Anggota demo bersifat sementara: suara dan tulisanmu dihapus saat kamu selesai atau setelah ${DEMO_TTL_MIN} menit.`
+            ? `Anggota demo bersifat sementara. Suara dan tulisan Anda dihapus setelah selesai atau setelah ${DEMO_TTL_MIN} menit.`
             : gasEnabled()
-              ? 'Data ini tersimpan di Google Spreadsheet panitia dan bisa kamu hapus kapan saja.'
-              : 'Data ini tersimpan hanya di browser ini.'}
+              ? 'Data ini tersimpan di Google Spreadsheet panitia dan dapat Anda hapus kapan saja.'
+              : 'Data ini hanya tersimpan di peramban ini.'}
         </p>
         <div className="actions">
           <a className="btn btn--primary" href="#partisipasi-suara" onClick={toVoting}>
@@ -290,7 +290,7 @@ function Pass({ m, others, focusOnMount }) {
               : demo
                 ? 'Selesai dan hapus data demo'
                 : sure
-                  ? 'Klik lagi untuk menghapus datamu'
+                  ? 'Klik lagi untuk menghapus data Anda'
                   : 'Hapus data saya'}
           </button>
         </div>

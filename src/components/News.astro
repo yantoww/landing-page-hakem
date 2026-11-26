@@ -1,6 +1,6 @@
 ---
 import Sign from './Sign.astro';
-import { news, party } from '../data/site.js';
+import { news, venue } from '../data/site.js';
 import { gasEnabled } from '../lib/gas.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -11,13 +11,17 @@ const types = [
   ['materi', 'Materi kampanye'],
 ];
 const label = { kegiatan: 'Kegiatan', berita: 'Berita', materi: 'Materi kampanye' };
-const feat = news.find((n) => n.featured);
-const rest = news.filter((n) => !n.featured);
+
+const point = `${venue.lat},${venue.lon}`;
+const bbox = [venue.lon - 0.0028, venue.lat - 0.0018, venue.lon + 0.0028, venue.lat + 0.0018].map((n) => n.toFixed(5)).join(',');
+const mapEmbed = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${encodeURIComponent(point)}`;
+const mapGoogle = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(point)}`;
+const mapOsm = `https://www.openstreetmap.org/?mlat=${venue.lat}&mlon=${venue.lon}#map=18/${venue.lat}/${venue.lon}`;
 ---
 
 <section class="sec" id="news" aria-labelledby="news-title">
   <div class="wrap wrap--rail">
-    <Sign num="06" id="news-title" title="News & Activities" sub="Kegiatan, berita, dan materi kampanye Partai Simpul." />
+    <Sign num="06" id="news-title" title="News & Activities" sub="Kegiatan, berita, materi kampanye, dan lokasi pameran Partai Simpul." />
 
     <div class="filter" role="group" aria-label="Filter jenis informasi">
       {
@@ -29,32 +33,20 @@ const rest = news.filter((n) => !n.featured);
       }
     </div>
 
-    <div class="news">
+    <ul class="news">
       {
-        feat && (
-          <article class="news__feat" data-type={feat.type}>
-            <h3>{feat.title}</h3>
-            <p>{feat.text}</p>
-            <p class="news__where">Lokasi: {party.campus}, Surabaya.</p>
-            <p class="news__tag">{label[feat.type]}, {feat.date}</p>
-          </article>
-        )
+        news.map((n) => (
+          <li class={n.featured ? 'ncard ncard--feat' : 'ncard'} data-type={n.type}>
+            <img src={`${base}/${n.image}`} alt="" width="1200" height="800" loading="lazy" />
+            <div class="ncard__body">
+              <p class="ncard__tag">{label[n.type]}, {n.date}</p>
+              <h3>{n.title}</h3>
+              <p>{n.text}</p>
+            </div>
+          </li>
+        ))
       }
-      <ul class="news__rows">
-        {
-          rest.map((n) => (
-            <li data-type={n.type}>
-              <p class="news__date">{n.date}</p>
-              <div>
-                <h3>{n.title}</h3>
-                <p>{n.text}</p>
-              </div>
-              <p class="news__type">{label[n.type]}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
+    </ul>
 
     <div class="posters" data-type="materi">
       <h3>Materi kampanye</h3>
@@ -62,7 +54,7 @@ const rest = news.filter((n) => !n.featured);
         <figure class="poster poster--a">
           <div class="poster__art">
             <img src={`${base}/logo.svg`} alt="" width="56" height="56" />
-            <p class="poster__big">Politik yang bisa kamu <em>ikut putuskan.</em></p>
+            <p class="poster__big">Politik yang ikut Anda <em>tentukan.</em></p>
             <p class="poster__small">Terhubung, Berembuk, Memutuskan</p>
           </div>
           <figcaption>Poster slogan. Materi kampanye simulasi.</figcaption>
@@ -74,7 +66,7 @@ const rest = news.filter((n) => !n.featured);
             <ul class="poster__rules">
               <li>Kuorum 30% anggota aktif</li>
               <li>{gasEnabled() ? 'Suara tanpa nama' : 'Suara rahasia'}</li>
-              <li>Hasil dibuka untuk umum</li>
+              <li>Hasil terbuka untuk umum</li>
             </ul>
             <p class="poster__small">Partai Simpul, simulasi akademik</p>
           </div>
@@ -96,13 +88,31 @@ const rest = news.filter((n) => !n.featured);
       </div>
     </div>
 
-    <p class="empty" id="news-empty" hidden>Belum ada item untuk kategori ini.</p>
+    <p class="empty" id="news-empty" hidden>Belum ada isi untuk kategori ini.</p>
+
+    <div class="venue">
+      <div class="venue__info">
+        <h3>Lokasi pameran</h3>
+        <p><strong>{venue.name}</strong></p>
+        <address>{venue.address}</address>
+        <p class="venue__coord">Koordinat: <span class="num">{venue.lat.toFixed(5)}, {venue.lon.toFixed(5)}</span></p>
+        <div class="actions">
+          <a class="btn btn--primary" href={mapGoogle} target="_blank" rel="noopener noreferrer">
+            Buka di Google Maps<span class="sr-only"> (buka di tab baru)</span>
+          </a>
+          <a class="btn btn--ghost" href={mapOsm} target="_blank" rel="noopener noreferrer">
+            Lihat di OpenStreetMap<span class="sr-only"> (buka di tab baru)</span>
+          </a>
+        </div>
+      </div>
+      <iframe class="venue__map" title={`Peta lokasi ${venue.name}`} src={mapEmbed} loading="lazy"></iframe>
+    </div>
   </div>
 </section>
 
 <script>
   const chips = document.querySelectorAll('.chip[data-filter]');
-  const items = document.querySelectorAll('#news [data-type]');
+  const items = document.querySelectorAll('#news [data-type]'); // peta lokasi tidak ikut disaring
   const empty = document.getElementById('news-empty');
 
   chips.forEach((chip) =>

@@ -84,14 +84,14 @@ export default function Participation() {
 
       {!storageAvailable() && (
         <p className="notice notice--warn" role="alert">
-          Penyimpanan browser tidak tersedia (mungkin mode privat). Fitur tetap berjalan, tetapi data hilang saat halaman
+          Penyimpanan peramban tidak tersedia (mungkin karena mode privat). Fitur tetap berjalan, tetapi data hilang saat halaman
           ditutup.
         </p>
       )}
 
       {live.error && (
         <p className="notice notice--warn" role="status">
-          Koneksi ke data bersama sedang terputus. Yang tampil adalah data terakhir, dan situs mencoba tersambung lagi otomatis.
+          Koneksi ke data bersama sedang terputus. Situs menampilkan data terakhir dan akan menyambung kembali secara otomatis.
         </p>
       )}
 
@@ -159,8 +159,8 @@ export default function Participation() {
       <div className="part__foot">
         <p>
           {gasEnabled()
-            ? 'Data simulasi dimulai dari nol. Data yang kamu tambahkan tersimpan di Google Spreadsheet panitia dan tampil di semua perangkat. Laporan forum hanya berlaku di perangkat ini.'
-            : 'Data simulasi dimulai dari nol. Semua data yang kamu tambahkan hanya tersimpan di browser ini.'}
+            ? 'Data simulasi dimulai dari nol. Data yang Anda tambahkan tersimpan di Google Spreadsheet panitia dan tampil di semua perangkat. Laporan forum hanya berlaku di perangkat ini.'
+            : 'Data simulasi dimulai dari nol. Semua data yang Anda tambahkan hanya tersimpan di peramban ini.'}
         </p>
         {/* Alat bantu pengembangan: hanya tampil saat npm run dev, tidak ikut build produksi (Vercel). */}
         {import.meta.env.DEV && (

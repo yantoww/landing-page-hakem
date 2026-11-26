@@ -41,7 +41,7 @@ export function Gate({ what, extra }) {
   return (
     <div className="gate">
       <p className="gate__msg">
-        <strong>Untuk {what}, masuk dulu sebagai anggota.</strong> Pengunjung tetap bisa membaca semuanya.
+        <strong>Untuk {what}, masuk terlebih dahulu sebagai anggota.</strong> Pengunjung tetap dapat membaca seluruh isi.
         {extra && ` ${extra}`}
       </p>
       <div className="gate__actions">
@@ -79,7 +79,7 @@ export function MemberBar() {
   if (!m)
     return (
       <p className="memberbar">
-        Kamu membaca sebagai pengunjung. Memilih, mendukung, dan menulis hanya untuk anggota.
+        Anda membaca sebagai pengunjung. Hanya anggota yang dapat memilih, mendukung, dan menulis.
       </p>
     );
   // Anggota demo (mode Google Spreadsheet) tidak sekadar keluar: datanya dihapus menyeluruh di server.
@@ -96,7 +96,7 @@ export function MemberBar() {
       Masuk sebagai <strong>{m.nick}</strong> <span className="num">({m.id})</span>.{' '}
       {demo ? (
         <>
-          Anggota demo bersifat sementara: suara dan tulisanmu dihapus saat selesai atau setelah {DEMO_TTL_MIN} menit.{' '}
+          Anggota demo bersifat sementara. Suara dan tulisan Anda dihapus setelah selesai atau setelah {DEMO_TTL_MIN} menit.{' '}
           <button type="button" className="linkbtn" disabled={busy} onClick={endDemo}>
             {busy ? 'Menghapus...' : 'Selesai dan hapus data demo'}
           </button>

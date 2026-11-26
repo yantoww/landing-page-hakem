@@ -425,8 +425,8 @@ export function castVote(ballotId, memberId, optionId) {
   if (!ballot) return { ok: false, reason: 'Pemungutan suara tidak ditemukan.' };
   if (ballot.status !== 'open') return { ok: false, reason: 'Pemungutan suara ini sudah ditutup.' };
   if (!ballot.options.some((o) => o.id === optionId)) return { ok: false, reason: 'Opsi tidak dikenal. Pilih salah satu opsi yang tersedia.' };
-  if (!state.members.some((m) => m.id === memberId)) return { ok: false, reason: 'Hanya anggota yang bisa memberi suara. Daftar atau coba sebagai anggota demo.' };
-  if (state.roll[ballotId]?.[memberId]) return { ok: false, reason: 'Kamu sudah memberi suara pada Rembuk ini. Satu anggota hanya punya satu suara.' };
+  if (!state.members.some((m) => m.id === memberId)) return { ok: false, reason: 'Hanya anggota yang dapat memberi suara. Daftar atau coba sebagai anggota demo.' };
+  if (state.roll[ballotId]?.[memberId]) return { ok: false, reason: 'Anda sudah memberi suara pada Rembuk ini. Satu anggota hanya memiliki satu suara.' };
   const receipt = `V-${code(8)}`;
   const wasMet = tally(state, ballot).quorumMet;
   const rollWith = (r) => ({ ...r, [ballotId]: { ...(r[ballotId] || {}), [memberId]: receipt } });
@@ -589,7 +589,7 @@ export function supportAspiration(memberId, aspId) {
   if (a.decided) return { ok: false, reason: 'Aspirasi ini sudah diputuskan.' };
   if (a.pending) return { ok: false, reason: 'Aspirasi ini masih dikirim. Coba lagi sebentar lagi.' };
   const list = state.supports[aspId] || [];
-  if (list.includes(memberId)) return { ok: false, reason: 'Kamu sudah mendukung usulan ini.' };
+  if (list.includes(memberId)) return { ok: false, reason: 'Anda sudah mendukung usulan ini.' };
   const withMine = { ...state.supports, [aspId]: [...list, memberId] };
 
   if (!gasEnabled()) {

@@ -5,67 +5,67 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const problems = [
   {
-    t: 'Keputusan partai jarang terlihat.',
-    d: 'Warga hanya melihat hasil akhirnya, seperti koalisi dan posisi, tanpa tahu siapa yang memutuskan dan atas dasar apa.',
+    t: 'Proses keputusan partai jarang terlihat.',
+    d: 'Warga hanya melihat hasil akhirnya, misalnya koalisi dan sikap partai, tanpa mengetahui siapa yang memutuskan dan apa dasarnya.',
   },
   {
-    t: 'Keanggotaan berhenti di kartu.',
-    d: 'Anggota diminta hadir di kampanye, tetapi tidak punya hak yang jelas untuk menentukan arah partai.',
+    t: 'Keanggotaan sering hanya formalitas.',
+    d: 'Anggota diminta hadir dalam kampanye, tetapi tidak memiliki hak yang jelas untuk menentukan arah partai.',
   },
   {
-    t: 'Alat digital berhenti di kampanye.',
-    d: 'Akun media sosial partai ramai, sementara forum internal dan proses keputusan tetap tertutup.',
+    t: 'Teknologi lebih banyak dipakai untuk kampanye.',
+    d: 'Akun media sosial partai ramai, sedangkan forum internal dan proses pengambilan keputusan tetap tertutup.',
   },
 ];
 
 const mission = [
-  'Menjadikan suara anggota dasar keputusan strategis, dengan kuorum, mayoritas, dan batas waktu tindak lanjut yang tertulis.',
-  'Menjalankan kepemimpinan kolektif yang bergilir dan bisa ditarik mandatnya oleh anggota.',
+  'Menjadikan suara anggota sebagai dasar keputusan strategis dengan aturan kuorum, suara terbanyak, dan batas waktu tindak lanjut yang tertulis.',
+  'Menjalankan kepemimpinan kolektif kolegial dengan masa jabatan terbatas dan mandat yang dapat ditarik anggota.',
   'Memperjuangkan tiga agenda: kerja layak di ekonomi platform, anggaran terbuka, dan hak digital.',
-  'Mengelola data anggota seminimal mungkin dan membuka aturan platform untuk diaudit Komite Integritas.',
-  'Membuka pintu bagi kelompok yang jarang terwakili, termasuk yang sulit datang ke rapat tatap muka.',
+  'Mengelola data anggota seperlunya dan membuka aturan platform untuk diaudit Komite Integritas.',
+  'Memberi ruang bagi kelompok yang jarang terwakili, termasuk warga yang sulit menghadiri rapat tatap muka.',
 ];
 
 const compare = [
   [
     'Keputusan strategis',
-    'Diputuskan pengurus pusat, anggota diberi tahu.',
-    'Diputuskan lewat voting anggota dengan kuorum dan mayoritas yang tertulis.',
+    'Diputuskan pengurus pusat, lalu disampaikan kepada anggota.',
+    'Diputuskan anggota melalui pemungutan suara dengan aturan kuorum dan suara terbanyak.',
   ],
   [
     'Keanggotaan',
-    'Kartu anggota, hak suara sering terbatas pada kongres.',
-    'Daftar daring gratis, hak suara aktif di setiap Rembuk Pekanan.',
+    'Anggota memiliki kartu, tetapi hak suara sering terbatas pada kongres.',
+    'Pendaftaran daring tanpa biaya dan hak suara dalam setiap Rembuk Pekanan.',
   ],
   [
     'Kepemimpinan',
-    'Satu ketua umum.',
-    'Lima kursi kolektif, juru bicara bergilir, mandat bisa ditarik anggota.',
+    'Ketua umum memegang wewenang yang besar.',
+    'Dewan Pimpinan Pusat bekerja secara kolektif kolegial, Ketua Umum tanpa hak veto, dan mandat dapat ditarik anggota.',
   ],
   [
     'Transparansi',
-    'Laporan berkala.',
-    'Rekap suara, status aspirasi, dan log moderasi tampil langsung.',
+    'Laporan disampaikan secara berkala.',
+    'Hasil suara, status aspirasi, dan catatan moderasi dapat dilihat langsung.',
   ],
   [
     'Data anggota',
-    'Dikelola sekretariat, aturan akses jarang dipublikasikan.',
+    'Dikelola sekretariat dan aturan aksesnya jarang dipublikasikan.',
     gasEnabled()
-      ? 'Data minimal, hak hapus, dan catatan suara hanya memakai ID anggota acak, bukan nama.'
-      : 'Data minimal, hak hapus, dan kotak suara dipisah dari identitas.',
+      ? 'Data dikumpulkan seperlunya, dapat dihapus, dan catatan suara hanya memakai nomor anggota acak.'
+      : 'Data dikumpulkan seperlunya, dapat dihapus, dan kotak suara dipisahkan dari identitas.',
   ],
 ];
 
 const values = [
-  ['Keterbukaan', 'Aturan, hasil, dan alasan keputusan bisa dibaca siapa saja.'],
-  ['Satu suara, satu bobot', 'Tidak ada suara yang lebih berat karena jabatan atau iuran.'],
-  ['Akuntabilitas', 'Setiap kursi punya piagam peran tertulis dan bisa ditarik mandatnya.'],
-  ['Kedaulatan data', 'Anggota memegang data dirinya dan bisa menghapusnya kapan saja.'],
+  ['Keterbukaan', 'Aturan, hasil, dan alasan keputusan dapat dibaca siapa saja.'],
+  ['Kesetaraan suara', 'Tidak ada suara yang bernilai lebih tinggi karena jabatan atau iuran.'],
+  ['Akuntabilitas', 'Setiap pengurus memiliki uraian tugas tertulis dan mandatnya dapat ditarik.'],
+  ['Kedaulatan data', 'Anggota berkuasa atas data pribadinya dan dapat menghapusnya kapan saja.'],
 ];
 
 const represented = [
   'Pemilih pemula dan mahasiswa.',
-  'Pekerja platform: pengemudi, kurir, pekerja lepas, dan kreator.',
+  'Pekerja platform, seperti pengemudi, kurir, pekerja lepas, dan kreator konten.',
   'Pelaku UMKM digital.',
   'Warga yang sulit hadir di rapat tatap muka karena jarak, jam kerja, atau disabilitas.',
 ];
@@ -73,19 +73,19 @@ const represented = [
 const meaning = [
   [
     'Nama',
-    'Simpul berarti ikatan sekaligus titik temu jalur, seperti simpul transportasi. Setiap anggota adalah satu simpul, dan keputusan lahir di titik temu.',
+    'Simpul berarti ikatan sekaligus titik pertemuan jalur, seperti simpul transportasi. Setiap anggota merupakan satu simpul, dan keputusan lahir di titik pertemuan.',
   ],
   [
     'Logo',
-    'Tiga garis bertemu di satu lingkaran: kuning untuk aspirasi, biru muda untuk forum, putih untuk suara. Garis yang keluar adalah keputusan yang ditetapkan.',
+    'Tiga garis bertemu pada satu lingkaran. Warna kuning mewakili aspirasi, biru muda mewakili forum, dan putih mewakili pemungutan suara. Garis yang keluar melambangkan keputusan yang ditetapkan.',
   ],
   [
     'Warna',
-    'Nila (biru tua) untuk ketelitian, warna celup tradisional. Kunyit (kuning) untuk ajakan bertindak, hanya dipakai pada aksi utama. Putih papan untuk keterbukaan.',
+    'Nila (biru tua), warna celup tradisional, melambangkan ketelitian. Kunyit (kuning) dipakai khusus untuk ajakan utama. Putih melambangkan keterbukaan.',
   ],
   [
     'Slogan',
-    'Terhubung, Berembuk, Memutuskan adalah urutan kerja kami: kumpulkan usulan, bahas bersama, lalu putuskan dengan aturan yang tertulis.',
+    'Terhubung, Berembuk, Memutuskan menggambarkan urutan kerja partai, yaitu mengumpulkan usulan, membahasnya bersama, lalu memutuskannya dengan aturan tertulis.',
   ],
 ];
 ---
@@ -108,9 +108,9 @@ const meaning = [
           }
         </ol>
         <p class="note">
-          Studi tentang digital party (Gerbaudo, 2018; Barberà dkk., 2021) mencatat bahwa platform bisa memperluas partisipasi
-          anggota, tetapi juga memusatkan kuasa pada pemimpin dan pemilik platform. Simpul menuliskan aturannya sejak awal untuk
-          menjawab risiko itu.
+          Kajian tentang partai digital (Gerbaudo, 2018; Barberà dkk., 2021) mencatat bahwa platform dapat memperluas partisipasi
+          anggota, tetapi juga dapat memusatkan kekuasaan pada pemimpin dan pemilik platform. Karena itu, Partai Simpul menetapkan
+          aturannya secara tertulis sejak awal.
         </p>
 
         <div class="about__block">
@@ -121,8 +121,8 @@ const meaning = [
             diambil dari tradisi itu.
           </p>
           <p>
-            Orientasi kebijakan: progresif dan pragmatis. Posisi Simpul ditentukan oleh keputusan anggota dan bukti, bukan oleh
-            garis ideologi yang dikunci pengurus.
+            Orientasi kebijakannya progresif dan pragmatis. Sikap Partai Simpul ditentukan oleh keputusan anggota dan bukti,
+            bukan oleh garis ideologi yang ditetapkan pengurus.
           </p>
         </div>
 
@@ -137,8 +137,8 @@ const meaning = [
       <div class="about__vision">
         <h3>Visi</h3>
         <p class="vision">
-          Politik Indonesia yang keputusan pentingnya bisa dilihat, diikuti, dan ditentukan oleh anggotanya lewat platform yang
-          terbuka untuk diaudit.
+          Terwujudnya politik Indonesia yang keputusan pentingnya dapat dilihat, diikuti, dan ditentukan oleh anggota melalui
+          platform yang terbuka untuk diaudit.
         </p>
         <h3>Misi</h3>
         <ol class="mission">
